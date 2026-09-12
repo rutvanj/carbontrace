@@ -26,10 +26,17 @@ import { authService, verificationService } from '../../services/api';
 
 export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [pendingCount, setPendingCount] = useState(4);
-  const user = authService.getCurrentUser();
+  const [pendingCount, setPendingCount] = useState(0);
+  const [user, setUser] = useState(authService.getCurrentUser());
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Restore user from API on mount
+  useEffect(() => {
+    authService.refreshCurrentUser()
+      .then((u) => { if (u) setUser(u); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     // Check pending count

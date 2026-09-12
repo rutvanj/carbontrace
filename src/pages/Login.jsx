@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, ShieldCheck, ArrowRight, CheckCircle2, Lock, Mail } from 'lucide-react';
+import { Leaf, ShieldCheck, ArrowRight, CheckCircle2, Lock, Mail, AlertCircle } from 'lucide-react';
 import { authService } from '../services/api';
 
 export function Login() {
-  const [email, setEmail] = useState('elena.vance@carbontrace.corp');
-  const [password, setPassword] = useState('••••••••••••');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       await authService.login(email, password);
       navigate('/dashboard');
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setError(detail || 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -85,6 +90,13 @@ export function Login() {
               </div>
             </div>
 
+            {error && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
+
             <div className="pt-2">
               <button
                 type="submit"
@@ -108,10 +120,12 @@ export function Login() {
             <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200/50 text-xs">
               <div className="flex items-center gap-2 text-emerald-900 font-semibold mb-1">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>Hackathon Demo Access</span>
+                <span>Demo Credentials</span>
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed">
-                Clicking above logs you in as <strong>Elena Vance</strong> (Lead ESG Compliance Officer) with access to all verified Scope 3 analytics and simulation modules.
+                Entry: <strong>entry@example.com</strong> / <strong>entrypass</strong><br />
+                Verifier: <strong>verifier@example.com</strong> / <strong>verifierpass</strong><br />
+                Admin: <strong>admin@example.com</strong> / <strong>adminpass</strong>
               </p>
             </div>
           </div>

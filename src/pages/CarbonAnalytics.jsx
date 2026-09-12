@@ -27,7 +27,7 @@ import { PageHeader } from '../components/common/PageHeader';
 import { ChartCard } from '../components/common/ChartCard';
 import { LoadingState } from '../components/common/FeedbackStates';
 import { formatEmissions, formatPercent } from '../utils/formatters';
-import { analyticsService, supplierService } from '../services/api';
+import { analyticsService, supplierService, exportService } from '../services/api';
 
 export function CarbonAnalytics() {
   const [data, setData] = useState(null);
@@ -64,7 +64,7 @@ export function CarbonAnalytics() {
   }
 
   const exportReport = () => {
-    alert('CarbonTrace ESG Analytics Report generated and downloaded (GHG Protocol Scope 3 Audit Format CSV).');
+    exportService.downloadCsv();
   };
 
   return (
