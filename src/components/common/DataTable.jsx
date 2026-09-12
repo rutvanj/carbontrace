@@ -10,11 +10,11 @@ export function DataTable({
   className = '',
 }) {
   return (
-    <div className={cn('card-base overflow-hidden', className)}>
+    <div className={cn('card-base overflow-hidden border border-[#D8CBB4]', className)}>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm border-collapse">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+            <tr className="border-b border-[#D8CBB4] bg-[#E8DEC9]/90 text-[11px] font-bold text-[#17352B] uppercase tracking-wider">
               {columns.map((col, idx) => (
                 <th
                   key={col.key || idx}
@@ -30,10 +30,10 @@ export function DataTable({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 bg-white">
+          <tbody className="divide-y divide-[#D8CBB4]/50 bg-[#F8F3E8]">
             {data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-6 py-12 text-center text-sm text-slate-400">
+                <td colSpan={columns.length} className="px-6 py-12 text-center text-sm text-[#687266]">
                   {emptyMessage}
                 </td>
               </tr>
@@ -43,7 +43,7 @@ export function DataTable({
                   key={row[keyField] || rowIdx}
                   onClick={() => onRowClick && onRowClick(row)}
                   className={cn(
-                    'transition-colors hover:bg-slate-50/70',
+                    'transition-colors hover:bg-[#E8DEC9]/50',
                     onRowClick && 'cursor-pointer'
                   )}
                 >
@@ -51,7 +51,7 @@ export function DataTable({
                     <td
                       key={col.key || colIdx}
                       className={cn(
-                        'px-4 py-3.5 text-slate-700 whitespace-nowrap text-xs sm:text-sm',
+                        'px-4 py-3.5 text-[#17352B] whitespace-nowrap text-xs sm:text-sm',
                         col.align === 'right' && 'text-right',
                         col.align === 'center' && 'text-center',
                         col.className

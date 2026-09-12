@@ -173,7 +173,7 @@ export function Verification() {
           <button
             type="button"
             onClick={() => setInspectRecord(row)}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-lg text-[#687266] hover:text-[#17352B] hover:bg-[#E8DEC9] transition-colors"
             title="Inspect Provenance"
           >
             <Eye className="w-4 h-4" />
@@ -185,20 +185,20 @@ export function Verification() {
                 type="button"
                 disabled={actionLoading}
                 onClick={() => handleApprove(row)}
-                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-white bg-[#0F3D2E] hover:bg-[#173F32] rounded-lg shadow-subtle transition-all"
                 title="Approve record as Official Verified Emission"
               >
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <Check className="w-3.5 h-3.5 text-white" />
                 <span>Approve</span>
               </button>
               <button
                 type="button"
                 disabled={actionLoading}
                 onClick={() => setRejectingRecord(row)}
-                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-bold text-[#991B1B] bg-[#FEE2E2] hover:bg-[#FECACA] border border-[#FECACA] rounded-lg transition-colors"
                 title="Reject with audit deviation note"
               >
-                <X className="w-3.5 h-3.5 text-rose-600" />
+                <X className="w-3.5 h-3.5 text-[#DC2626]" />
                 <span>Reject</span>
               </button>
             </>
@@ -211,11 +211,11 @@ export function Verification() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Verification Center"
-        description="Strict ESG review gatekeeper. Only verified records enter official statutory corporate reporting and public disclosures."
+        title="Verify: Scope 3 Verification Center"
+        description="Strict ESG review gatekeeper. Only verified shipments enter statutory corporate reporting, CSRD compliance, and public disclosures."
         badge={
-          <span className="badge bg-amber-50 text-amber-800 border border-amber-200">
-            {pendingCount} Awaiting Compliance Approval
+          <span className="badge bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
+            Step 2: VERIFY ({pendingCount} Pending Review)
           </span>
         }
       />
@@ -223,24 +223,24 @@ export function Verification() {
       {/* Banner Feedback */}
       {bannerNotice && (
         <div
-          className={`p-3.5 rounded-xl border flex items-center justify-between text-xs ${
+          className={`p-3.5 rounded-xl border flex items-center justify-between text-xs font-medium ${
             bannerNotice.type === 'success'
-              ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-              : 'bg-rose-50 text-rose-900 border-rose-200'
+              ? 'bg-[#E2EBE5] text-[#0F3D2E] border-[#1F5D46]/40'
+              : 'bg-[#FEE2E2] text-[#991B1B] border-[#FECACA]'
           }`}
         >
           <div className="flex items-center gap-2">
             {bannerNotice.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-[#0F3D2E] shrink-0" />
             ) : (
-              <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+              <AlertTriangle className="w-4 h-4 text-[#DC2626] shrink-0" />
             )}
             <span>{bannerNotice.message}</span>
           </div>
           <button
             type="button"
             onClick={() => setBannerNotice(null)}
-            className="text-slate-400 hover:text-slate-600 font-bold ml-2"
+            className="text-[#687266] hover:text-[#17352B] font-bold ml-2 text-sm"
           >
             ×
           </button>
@@ -248,29 +248,29 @@ export function Verification() {
       )}
 
       {/* Principles Notice */}
-      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-[#F8F3E8] border border-[#D8CBB4] text-xs text-[#687266] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-subtle">
         <div className="flex items-center gap-2.5">
-          <Info className="w-4 h-4 text-slate-500 shrink-0" />
+          <Info className="w-4 h-4 text-[#0F3D2E] shrink-0" />
           <span>
-            <strong>Audit Principle:</strong> Pending shipments carry unverified estimates. Once approved, the backend marks the entry as auditable and locks the emission calculation.
+            <strong>Audit Principle:</strong> Pending shipments carry unverified estimates. Once approved, the backend locks the emission factor and logs the immutable audit timestamp.
           </span>
         </div>
-        <div className="flex items-center gap-4 text-slate-700 font-medium shrink-0">
-          <span>Official Verified: <strong>{verifiedCount}</strong></span>
-          <span>Pending: <strong>{pendingCount}</strong></span>
-          <span>Rejected: <strong>{rejectedCount}</strong></span>
+        <div className="flex items-center gap-4 text-[#17352B] font-semibold shrink-0">
+          <span>Official Verified: <strong className="text-[#0F3D2E]">{verifiedCount}</strong></span>
+          <span>Pending: <strong className="text-[#92400E]">{pendingCount}</strong></span>
+          <span>Rejected: <strong className="text-[#991B1B]">{rejectedCount}</strong></span>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-[#D8CBB4] pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('Pending')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'Pending'
-              ? 'bg-amber-100 text-amber-900 border border-amber-300'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] shadow-subtle'
+              : 'text-[#687266] hover:bg-[#E8DEC9]'
           }`}
         >
           Pending Review ({pendingCount})
@@ -278,10 +278,10 @@ export function Verification() {
         <button
           type="button"
           onClick={() => setActiveTab('Verified')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'Verified'
-              ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/40 shadow-subtle'
+              : 'text-[#687266] hover:bg-[#E8DEC9]'
           }`}
         >
           Verified Official ({verifiedCount})
@@ -289,10 +289,10 @@ export function Verification() {
         <button
           type="button"
           onClick={() => setActiveTab('Rejected')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'Rejected'
-              ? 'bg-rose-100 text-rose-900 border border-rose-300'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA] shadow-subtle'
+              : 'text-[#687266] hover:bg-[#E8DEC9]'
           }`}
         >
           Rejected ({rejectedCount})
@@ -300,10 +300,10 @@ export function Verification() {
         <button
           type="button"
           onClick={() => setActiveTab('All')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
             activeTab === 'All'
-              ? 'bg-slate-800 text-white'
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-[#0F3D2E] text-white shadow-subtle'
+              : 'text-[#687266] hover:bg-[#E8DEC9]'
           }`}
         >
           All Records ({records.length})
@@ -327,7 +327,7 @@ export function Verification() {
       <Modal
         isOpen={Boolean(rejectingRecord)}
         onClose={() => setRejectingRecord(null)}
-        title={`Reject Shipment ${rejectingRecord?.id}?`}
+        title={`Reject Shipment #${rejectingRecord?.id}?`}
         subtitle="Provide a non-compliance reason for supplier feedback and audit trail"
         footer={
           <>
@@ -349,12 +349,12 @@ export function Verification() {
           </>
         }
       >
-        <div className="space-y-3">
-          <p className="text-xs text-slate-600">
+        <div className="space-y-3 text-[#17352B]">
+          <p className="text-xs text-[#687266] leading-relaxed">
             Rejecting this shipment will remove its emissions from prospective corporate reporting and notify <strong>{rejectingRecord?.supplierName}</strong> to rectify shipping documents.
           </p>
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-[#17352B] mb-1">
               Audit Deviation Reason *
             </label>
             <textarea
@@ -372,7 +372,7 @@ export function Verification() {
       <Modal
         isOpen={Boolean(inspectRecord)}
         onClose={() => setInspectRecord(null)}
-        title={`Verification Details: ${inspectRecord?.id}`}
+        title={`Verification Details: Shipment #${inspectRecord?.id}`}
         subtitle="Detailed factor attribution and submission metadata"
         footer={
           <div className="flex items-center justify-between w-full">
@@ -389,52 +389,52 @@ export function Verification() {
       >
         {inspectRecord && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 grid grid-cols-2 gap-3">
+            <div className="p-3.5 bg-[#E8DEC9]/50 rounded-xl border border-[#D8CBB4] grid grid-cols-2 gap-3">
               <div>
-                <span className="text-slate-400 block mb-0.5">Supplier:</span>
-                <span className="font-semibold text-slate-800">{inspectRecord.supplierName}</span>
-                <span className="text-slate-500 block text-[11px]">{inspectRecord.supplierTier}</span>
+                <span className="text-[#687266] block mb-0.5 text-[11px] font-semibold">Supplier:</span>
+                <span className="font-bold text-[#17352B]">{inspectRecord.supplierName}</span>
+                <span className="text-[#687266] block text-[11px]">{inspectRecord.supplierTier}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Material:</span>
-                <span className="font-semibold text-slate-800">{inspectRecord.material}</span>
+                <span className="text-[#687266] block mb-0.5 text-[11px] font-semibold">Material:</span>
+                <span className="font-bold text-[#17352B]">{inspectRecord.material || 'General Cargo'}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Route:</span>
-                <span className="font-medium text-slate-800">{inspectRecord.origin} → {inspectRecord.destination}</span>
+                <span className="text-[#687266] block mb-0.5 text-[11px] font-semibold">Route:</span>
+                <span className="font-medium text-[#17352B]">{inspectRecord.origin} → {inspectRecord.destination}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Emissions:</span>
-                <span className="font-extrabold text-emerald-800 text-sm">
-                  {formatEmissions(inspectRecord.calculatedEmissionsKg)}
+                <span className="text-[#687266] block mb-0.5 text-[11px] font-semibold">Emissions:</span>
+                <span className="font-extrabold text-[#0F3D2E] text-sm">
+                  {formatEmissions(inspectRecord.calculatedEmissionsKg || inspectRecord.emissions)}
                 </span>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-3 space-y-1.5 text-[11px]">
+            <div className="border border-[#D8CBB4] bg-white rounded-xl p-3.5 space-y-2 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-500">Submitted By:</span>
-                <span className="font-medium text-slate-800">{inspectRecord.submittedBy || 'API EDI Connector'}</span>
+                <span className="text-[#687266]">Submitted By:</span>
+                <span className="font-semibold text-[#17352B]">{inspectRecord.submittedBy || 'API EDI Connector'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Emission Factor Source:</span>
-                <span className="font-medium text-slate-800">GLEC Framework v3.0 / DEFRA 2024</span>
+                <span className="text-[#687266]">Emission Factor Source:</span>
+                <span className="font-semibold text-[#17352B]">GLEC Framework v3.0 / DEFRA 2024</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Calculated Distance:</span>
-                <span className="font-medium text-slate-800">{formatNumber(inspectRecord.distanceKm)} km ({inspectRecord.transportMode})</span>
+                <span className="text-[#687266]">Calculated Distance:</span>
+                <span className="font-semibold text-[#17352B]">{formatNumber(inspectRecord.distanceKm)} km ({inspectRecord.transportMode})</span>
               </div>
               {inspectRecord.aiEstimated && (
-                <div className="flex justify-between text-indigo-700 font-semibold pt-1 border-t border-slate-100">
-                  <span>AI Estimation Model Confidence:</span>
+                <div className="flex justify-between text-[#0F3D2E] font-bold pt-1 border-t border-[#D8CBB4]/50">
+                  <span>AI Estimation Confidence:</span>
                   <span>{inspectRecord.aiConfidence}%</span>
                 </div>
               )}
             </div>
 
             {inspectRecord.notes && (
-              <div className="p-2.5 rounded bg-slate-50 text-[11px] text-slate-600 border border-slate-200">
-                <span className="font-semibold block mb-0.5">Notes:</span>
+              <div className="p-3 rounded-xl bg-[#FDFBF7] text-xs text-[#17352B] border border-[#D8CBB4]">
+                <span className="font-bold block mb-0.5 text-[#687266]">Notes:</span>
                 <span className="italic">{inspectRecord.notes}</span>
               </div>
             )}

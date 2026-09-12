@@ -3,6 +3,7 @@ import {
   BarChart3,
   Filter,
   Download,
+  FileText,
   Calendar,
   Layers,
   Truck,
@@ -63,36 +64,42 @@ export function CarbonAnalytics() {
     return <LoadingState message="Aggregating multi-dimensional emissions analytics..." />;
   }
 
-  const exportReport = () => {
-    exportService.downloadCsv();
-  };
-
   return (
     <div className="space-y-6">
       <PageHeader
         title="Carbon Analytics"
         description="Comprehensive emissions telemetry across time, supplier tiers, logistical transport modalities, and procured materials."
         actions={
-          <button
-            type="button"
-            onClick={exportReport}
-            className="btn-secondary text-xs"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export ESG Report</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => exportService.downloadCsv()}
+              className="btn-secondary text-xs"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => exportService.downloadPdf()}
+              className="btn-primary text-xs"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Export Audit PDF</span>
+            </button>
+          </div>
         }
       />
 
       {/* Analytics Multi-Dimensional Filter Bar */}
-      <div className="card-base p-4 bg-white border border-slate-200">
-        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+      <div className="card-base p-4 border border-[#D8CBB4]">
+        <div className="text-[11px] font-bold text-[#6F8068] uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Filter className="w-3.5 h-3.5" />
           <span>Dimension Filters</span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Date Range</label>
+            <label className="block text-xs font-semibold text-[#17352B] mb-1">Date Range</label>
             <select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
@@ -106,7 +113,7 @@ export function CarbonAnalytics() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Supplier Tier</label>
+            <label className="block text-xs font-semibold text-[#17352B] mb-1">Supplier Tier</label>
             <select
               value={selectedTier}
               onChange={(e) => setSelectedTier(e.target.value)}
@@ -120,7 +127,7 @@ export function CarbonAnalytics() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Transport Mode</label>
+            <label className="block text-xs font-semibold text-[#17352B] mb-1">Transport Mode</label>
             <select
               value={selectedMode}
               onChange={(e) => setSelectedMode(e.target.value)}
@@ -135,7 +142,7 @@ export function CarbonAnalytics() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-600 mb-1">Supplier Entity</label>
+            <label className="block text-xs font-semibold text-[#17352B] mb-1">Supplier Entity</label>
             <select
               value={selectedSupplier}
               onChange={(e) => setSelectedSupplier(e.target.value)}
@@ -162,22 +169,22 @@ export function CarbonAnalytics() {
           <AreaChart data={data.timeline} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#059669" stopOpacity={0.4} />
-                <stop offset="95%" stopColor="#059669" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#0F3D2E" stopOpacity={0.4} />
+                <stop offset="95%" stopColor="#0F3D2E" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} />
-            <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
+            <XAxis dataKey="month" stroke="#17352B" fontSize={12} tickLine={false} />
+            <YAxis stroke="#687266" fontSize={12} tickLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
             <Tooltip
               formatter={(value, name) => [
                 formatEmissions(value),
                 name === 'total' ? 'Actual Monthly Total' : 'Reduction Target'
               ]}
               contentStyle={{
-                backgroundColor: '#0f172a',
+                backgroundColor: '#0F3D2E',
                 borderRadius: '8px',
-                color: '#ffffff',
-                border: 'none',
+                color: '#F8F3E8',
+                border: '1px solid #1F5D46',
                 fontSize: '12px'
               }}
             />
@@ -186,8 +193,8 @@ export function CarbonAnalytics() {
               type="monotone"
               dataKey="total"
               name="Monthly Scope 3 Footprint"
-              stroke="#059669"
-              strokeWidth={2}
+              stroke="#0F3D2E"
+              strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#colorTotal)"
             />
@@ -205,22 +212,23 @@ export function CarbonAnalytics() {
         >
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={data.byMode} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <XAxis dataKey="mode" stroke="#94a3b8" fontSize={12} tickLine={false} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
+              <XAxis dataKey="mode" stroke="#17352B" fontSize={12} tickLine={false} />
+              <YAxis stroke="#687266" fontSize={12} tickLine={false} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
               <Tooltip
                 formatter={(val) => [formatEmissions(val), 'Emissions']}
                 contentStyle={{
-                  backgroundColor: '#0f172a',
+                  backgroundColor: '#0F3D2E',
                   borderRadius: '8px',
-                  color: '#ffffff',
-                  border: 'none',
+                  color: '#F8F3E8',
+                  border: '1px solid #1F5D46',
                   fontSize: '12px'
                 }}
               />
               <Bar dataKey="emissionsKg" radius={[6, 6, 0, 0]}>
-                {data.byMode.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
+                {data.byMode.map((entry, index) => {
+                  const modeColors = ['#0F3D2E', '#1F5D46', '#6F8068', '#B45309'];
+                  return <Cell key={`cell-${index}`} fill={modeColors[index % modeColors.length]} />;
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -244,17 +252,18 @@ export function CarbonAnalytics() {
                 outerRadius={85}
                 paddingAngle={4}
               >
-                {data.byTier.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
+                {data.byTier.map((entry, index) => {
+                  const tierColors = ['#0F3D2E', '#1F5D46', '#B45309'];
+                  return <Cell key={`cell-${index}`} fill={tierColors[index % tierColors.length]} />;
+                })}
               </Pie>
               <Tooltip
                 formatter={(val) => [formatEmissions(val), 'Emissions']}
                 contentStyle={{
-                  backgroundColor: '#0f172a',
+                  backgroundColor: '#0F3D2E',
                   borderRadius: '8px',
-                  color: '#ffffff',
-                  border: 'none',
+                  color: '#F8F3E8',
+                  border: '1px solid #1F5D46',
                   fontSize: '12px'
                 }}
               />
@@ -278,19 +287,19 @@ export function CarbonAnalytics() {
               layout="vertical"
               margin={{ top: 10, right: 20, left: 30, bottom: 0 }}
             >
-              <XAxis type="number" stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
-              <YAxis dataKey="name" type="category" stroke="#475569" fontSize={11} tickLine={false} width={130} />
+              <XAxis type="number" stroke="#687266" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
+              <YAxis dataKey="name" type="category" stroke="#17352B" fontSize={11} tickLine={false} width={130} />
               <Tooltip
                 formatter={(val) => [formatEmissions(val), 'Emissions']}
                 contentStyle={{
-                  backgroundColor: '#0f172a',
+                  backgroundColor: '#0F3D2E',
                   borderRadius: '8px',
-                  color: '#ffffff',
-                  border: 'none',
+                  color: '#F8F3E8',
+                  border: '1px solid #1F5D46',
                   fontSize: '12px'
                 }}
               />
-              <Bar dataKey="emissionsKg" fill="#047857" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="emissionsKg" fill="#0F3D2E" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -307,19 +316,19 @@ export function CarbonAnalytics() {
               layout="vertical"
               margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
             >
-              <XAxis type="number" stroke="#94a3b8" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
-              <YAxis dataKey="name" type="category" stroke="#475569" fontSize={11} tickLine={false} width={120} />
+              <XAxis type="number" stroke="#687266" fontSize={11} tickFormatter={(v) => `${Math.round(v / 1000)}t`} />
+              <YAxis dataKey="name" type="category" stroke="#17352B" fontSize={11} tickLine={false} width={120} />
               <Tooltip
                 formatter={(val) => [formatEmissions(val), 'Emissions']}
                 contentStyle={{
-                  backgroundColor: '#0f172a',
+                  backgroundColor: '#0F3D2E',
                   borderRadius: '8px',
-                  color: '#ffffff',
-                  border: 'none',
+                  color: '#F8F3E8',
+                  border: '1px solid #1F5D46',
                   fontSize: '12px'
                 }}
               />
-              <Bar dataKey="emissionsKg" fill="#0284c7" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="emissionsKg" fill="#1F5D46" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -327,3 +336,4 @@ export function CarbonAnalytics() {
     </div>
   );
 }
+

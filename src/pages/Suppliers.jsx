@@ -96,14 +96,14 @@ export function Suppliers() {
       header: 'Supplier Name',
       render: (val, row) => (
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600 font-semibold text-xs border border-slate-200">
+          <div className="w-8 h-8 rounded-lg bg-[#E8DEC9] flex items-center justify-center text-[#0F3D2E] font-bold text-xs border border-[#D8CBB4]">
             {row.name.substring(0, 2).toUpperCase()}
           </div>
           <div>
-            <div className="font-semibold text-slate-900 hover:text-emerald-700 transition-colors">
+            <div className="font-semibold text-[#17352B] hover:text-[#0F3D2E] transition-colors">
               {row.name}
             </div>
-            <div className="text-[11px] text-slate-500">{row.id} • {row.contactPerson}</div>
+            <div className="text-[11px] text-[#687266]">{row.id} • {row.contactPerson}</div>
           </div>
         </div>
       )
@@ -117,8 +117,8 @@ export function Suppliers() {
       key: 'location',
       header: 'Location',
       render: (val) => (
-        <span className="flex items-center gap-1 text-slate-600 text-xs">
-          <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+        <span className="flex items-center gap-1 text-[#17352B] text-xs">
+          <MapPin className="w-3.5 h-3.5 text-[#6F8068] shrink-0" />
           <span>{val}</span>
         </span>
       )
@@ -128,7 +128,7 @@ export function Suppliers() {
       header: 'Total Scope 3',
       align: 'right',
       render: (val) => (
-        <span className="font-semibold text-slate-900">
+        <span className="font-bold text-[#17352B]">
           {formatEmissions(val)}
         </span>
       )
@@ -145,13 +145,13 @@ export function Suppliers() {
       align: 'center',
       render: (val) => (
         <div className="inline-flex items-center gap-1.5 text-xs font-semibold">
-          <div className="w-16 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <div className="w-16 h-1.5 rounded-full bg-[#E8DEC9] overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full"
+              className="h-full bg-[#0F3D2E] rounded-full"
               style={{ width: `${val}%` }}
             />
           </div>
-          <span className="text-slate-700">{formatPercent(val, 0)}</span>
+          <span className="text-[#17352B]">{formatPercent(val, 0)}</span>
         </div>
       )
     },
@@ -160,7 +160,7 @@ export function Suppliers() {
       header: 'Status',
       align: 'center',
       render: (val) => (
-        <span className="badge bg-slate-100 text-slate-700 border border-slate-200">
+        <span className="badge bg-[#E8DEC9]/60 text-[#17352B] border border-[#D8CBB4]">
           {val}
         </span>
       )

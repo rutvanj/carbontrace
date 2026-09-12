@@ -76,7 +76,7 @@ export function Hotspots() {
         title="Emission Hotspots"
         description="Pinpoint the largest sources of carbon intensity across suppliers, freight lanes, raw materials, and modal choices."
         badge={
-          <span className="badge bg-rose-50 text-rose-800 border border-rose-200">
+          <span className="badge bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA] font-semibold">
             Priority Decarbonization Targets
           </span>
         }
@@ -89,9 +89,9 @@ export function Hotspots() {
       />
 
       {/* Overview callout */}
-      <div className="p-4 rounded-xl bg-gradient-to-r from-rose-50 via-amber-50 to-white border border-rose-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-700">
+      <div className="card-base p-4 bg-[#E8DEC9]/50 border border-[#D8CBB4] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-[#17352B]">
         <div className="flex items-center gap-2.5">
-          <Flame className="w-5 h-5 text-rose-600 shrink-0" />
+          <Flame className="w-5 h-5 text-[#B45309] shrink-0" />
           <span>
             The top <strong>4 suppliers</strong> and <strong>2 transport lanes</strong> account for over <strong>72%</strong> of your total corporate value-chain footprint. Prioritizing these hotspots yields the highest ROI on decarbonization capital.
           </span>
@@ -103,19 +103,19 @@ export function Hotspots() {
         {sections.map((sec, idx) => {
           const Icon = sec.icon;
           return (
-            <div key={idx} className="card-base p-5 flex flex-col justify-between">
+            <div key={idx} className="card-base p-5 flex flex-col justify-between border border-[#D8CBB4]">
               <div>
-                <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3 mb-4">
+                <div className="flex items-start justify-between gap-2 border-b border-[#D8CBB4] pb-3 mb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-slate-100 text-slate-700">
+                    <div className="p-2 rounded-lg bg-[#E8DEC9] text-[#0F3D2E] border border-[#D8CBB4]">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-bold text-slate-900">{sec.title}</h2>
-                      <p className="text-xs text-slate-500">{sec.subtitle}</p>
+                      <h2 className="text-sm font-bold text-[#17352B]">{sec.title}</h2>
+                      <p className="text-xs text-[#687266]">{sec.subtitle}</p>
                     </div>
                   </div>
-                  <span className="badge bg-slate-100 text-slate-600 border border-slate-200 text-[10px]">
+                  <span className="badge bg-[#E8DEC9]/60 text-[#17352B] border border-[#D8CBB4] text-[10px]">
                     {sec.badge}
                   </span>
                 </div>
@@ -127,8 +127,8 @@ export function Hotspots() {
                       key={itemIdx}
                       className={`p-3.5 rounded-lg border transition-all ${
                         item.rank === 1
-                          ? 'bg-rose-50/40 border-rose-200/80 shadow-subtle'
-                          : 'bg-slate-50/60 border-slate-200 hover:border-slate-300'
+                          ? 'bg-[#E8DEC9]/50 border-[#1F5D46]/40 shadow-subtle'
+                          : 'bg-[#F8F3E8] border-[#D8CBB4] hover:border-[#1F5D46]/40'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -136,31 +136,31 @@ export function Hotspots() {
                           <span
                             className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
                               item.rank === 1
-                                ? 'bg-rose-600 text-white'
-                                : 'bg-slate-200 text-slate-700'
+                                ? 'bg-[#0F3D2E] text-[#F8F3E8]'
+                                : 'bg-[#E8DEC9] text-[#17352B]'
                             }`}
                           >
                             {item.rank}
                           </span>
-                          <span className="font-semibold text-xs text-slate-900 leading-tight">
+                          <span className="font-semibold text-xs text-[#17352B] leading-tight">
                             {item.name}
                           </span>
                         </div>
                         <StatusBadge status={item.impact} />
                       </div>
 
-                      <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] pt-2 border-t border-slate-100">
+                      <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] pt-2 border-t border-[#D8CBB4]/60">
                         <div>
-                          <span className="text-slate-400 block">Footprint:</span>
-                          <span className="font-bold text-slate-800">{formatEmissions(item.emissionsKg)}</span>
+                          <span className="text-[#687266] block">Footprint:</span>
+                          <span className="font-bold text-[#17352B]">{formatEmissions(item.emissionsKg)}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block">Share of Total:</span>
-                          <span className="font-semibold text-slate-700">{formatPercent(item.share)}</span>
+                          <span className="text-[#687266] block">Share of Total:</span>
+                          <span className="font-semibold text-[#17352B]">{formatPercent(item.share)}</span>
                         </div>
                         <div>
-                          <span className="text-slate-400 block">Potential Reduction:</span>
-                          <span className="font-bold text-emerald-700 flex items-center gap-0.5">
+                          <span className="text-[#687266] block">Potential Reduction:</span>
+                          <span className="font-bold text-[#0F3D2E] flex items-center gap-0.5">
                             <TrendingDown className="w-3 h-3" />
                             {formatEmissions(item.potentialReductionKg)}
                           </span>
@@ -168,9 +168,9 @@ export function Hotspots() {
                       </div>
 
                       {item.action && (
-                        <div className="mt-2 text-[11px] text-emerald-800 bg-white px-2 py-1 rounded border border-emerald-200/60 flex items-center justify-between">
+                        <div className="mt-2 text-[11px] text-[#0F3D2E] bg-[#E2EBE5] px-2.5 py-1.5 rounded border border-[#1F5D46]/30 flex items-center justify-between">
                           <span>Recommended Action: <strong>{item.action}</strong></span>
-                          <NavLink to="/recommendations" className="text-emerald-700 font-semibold hover:underline">
+                          <NavLink to="/recommendations" className="text-[#0F3D2E] font-bold hover:underline">
                             Action →
                           </NavLink>
                         </div>

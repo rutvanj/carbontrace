@@ -12,7 +12,9 @@ import {
   Sparkles,
   MapPin,
   Calendar,
-  Scale
+  Scale,
+  Download,
+  FileSpreadsheet
 } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader';
 import { FilterBar } from '../components/common/FilterBar';
@@ -21,7 +23,7 @@ import { StatusBadge } from '../components/common/StatusBadge';
 import { Modal } from '../components/common/Modal';
 import { LoadingState } from '../components/common/FeedbackStates';
 import { formatEmissions, formatNumber, formatDate } from '../utils/formatters';
-import { shipmentService } from '../services/api';
+import { shipmentService, exportService } from '../services/api';
 
 export function Shipments() {
   const [shipments, setShipments] = useState([]);
@@ -170,10 +172,30 @@ export function Shipments() {
         title="Shipment Logistics Log"
         description="Comprehensive audit ledger of freight shipments, carrier waypoints, emission factors, and verification states."
         actions={
-          <NavLink to="/shipments/new" className="btn-primary text-xs">
-            <Plus className="w-4 h-4" />
-            <span>Add New Shipment</span>
-          </NavLink>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => exportService.downloadCsv()}
+              className="btn-secondary text-xs"
+              title="Download CSV of all logged shipments"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => exportService.downloadPdf()}
+              className="btn-secondary text-xs"
+              title="Download official PDF report"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <span>Export PDF</span>
+            </button>
+            <NavLink to="/shipments/new" className="btn-primary text-xs">
+              <Plus className="w-4 h-4" />
+              <span>Log Shipment</span>
+            </NavLink>
+          </div>
         }
       />
 
@@ -195,7 +217,7 @@ export function Shipments() {
             label: 'Mode',
             value: selectedMode,
             onChange: setSelectedMode,
-            options: ['All', 'Road', 'Rail', 'Sea', 'Air']
+            options: ['All', 'Road', 'Rail', 'Sea', 'Air', 'Inland']
           }
         ]}
         onReset={handleReset}
@@ -224,8 +246,8 @@ export function Shipments() {
         subtitle="Full telemetry, emission calculation methodology, and audit trail"
         footer={
           <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              <span>Status:</span>
+            <div className="flex items-center gap-1.5 text-xs text-[#687266]">
+              <span className="font-semibold">Status:</span>
               <StatusBadge status={activeShipment?.status} />
             </div>
             <button
@@ -241,35 +263,35 @@ export function Shipments() {
         {activeShipment && (
           <div className="space-y-4 text-xs">
             {/* Top row metadata */}
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200/80 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="p-3.5 rounded-xl bg-[#E8DEC9]/50 border border-[#D8CBB4] grid grid-cols-2 sm:grid-cols-3 gap-3">
               <div>
-                <span className="text-slate-400 block mb-0.5">Supplier:</span>
-                <span className="font-semibold text-slate-900">{activeShipment.supplierName}</span>
-                <span className="text-slate-500 block text-[11px]">{activeShipment.supplierTier}</span>
+                <span className="text-[#687266] block text-[11px] font-semibold mb-0.5">Supplier:</span>
+                <span className="font-bold text-[#17352B]">{activeShipment.supplierName}</span>
+                <span className="text-[#687266] block text-[11px]">{activeShipment.supplierTier}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Material:</span>
-                <span className="font-semibold text-slate-800">{activeShipment.material}</span>
+                <span className="text-[#687266] block text-[11px] font-semibold mb-0.5">Material:</span>
+                <span className="font-bold text-[#17352B]">{activeShipment.material || 'General Freight'}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Shipment Date:</span>
-                <span className="font-semibold text-slate-800">{formatDate(activeShipment.date)}</span>
+                <span className="text-[#687266] block text-[11px] font-semibold mb-0.5">Shipment Date:</span>
+                <span className="font-bold text-[#17352B]">{formatDate(activeShipment.date)}</span>
               </div>
             </div>
 
             {/* Logistics & Calculation Breakdown */}
-            <div className="border border-slate-200 rounded-lg p-4 space-y-3">
-              <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider text-slate-500">
+            <div className="border border-[#D8CBB4] rounded-xl p-4 bg-white space-y-3">
+              <h3 className="font-bold text-[11px] uppercase tracking-wider text-[#687266]">
                 Calculated Scope 3 Emissions
               </h3>
-              <div className="flex items-baseline justify-between border-b border-slate-100 pb-2">
-                <span className="text-slate-600">Calculated Footprint:</span>
-                <span className="text-base font-extrabold text-emerald-800">
-                  {formatEmissions(activeShipment.calculatedEmissionsKg)}
+              <div className="flex items-baseline justify-between border-b border-[#D8CBB4]/50 pb-2">
+                <span className="text-xs font-semibold text-[#17352B]">Calculated Carbon Burden:</span>
+                <span className="text-base font-extrabold text-[#0F3D2E]">
+                  {formatEmissions(activeShipment.calculatedEmissionsKg || activeShipment.emissions)}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-600">
+              <div className="grid grid-cols-2 gap-2 text-xs text-[#17352B]">
                 <div>Weight: <strong>{formatNumber(activeShipment.weightKg)} kg</strong></div>
                 <div>Distance: <strong>{formatNumber(activeShipment.distanceKm)} km</strong></div>
                 <div>Transport Mode: <strong>{activeShipment.transportMode}</strong></div>
@@ -277,9 +299,9 @@ export function Shipments() {
               </div>
 
               {activeShipment.aiEstimated && (
-                <div className="mt-2 p-2.5 rounded bg-indigo-50/70 border border-indigo-200 text-indigo-900 text-xs flex items-center justify-between">
+                <div className="mt-2 p-2.5 rounded-lg bg-[#EDF3F0] border border-[#C5D7CC] text-[#0F3D2E] text-xs flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-indigo-600" />
+                    <Sparkles className="w-4 h-4 text-[#0F3D2E]" />
                     <span>AI Route & Emission Estimation Model</span>
                   </div>
                   <span className="font-bold">{activeShipment.aiConfidence}% Confidence</span>
@@ -288,28 +310,28 @@ export function Shipments() {
             </div>
 
             {/* Verification & Submission Trail */}
-            <div className="border border-slate-200 rounded-lg p-4 space-y-2 text-[11px]">
-              <h3 className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">
+            <div className="border border-[#D8CBB4] rounded-xl p-4 bg-white space-y-2 text-xs">
+              <h3 className="font-bold text-[#687266] uppercase tracking-wider text-[10px]">
                 Audit Provenance & Compliance
               </h3>
               <div className="flex justify-between">
-                <span className="text-slate-500">Submitted By:</span>
-                <span className="font-medium text-slate-800">{activeShipment.submittedBy || 'API EDI Connector'}</span>
+                <span className="text-[#687266]">Submitted By:</span>
+                <span className="font-semibold text-[#17352B]">{activeShipment.submittedBy || 'API EDI Connector'}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Verified By:</span>
-                <span className="font-medium text-slate-800">{activeShipment.verifiedBy || 'Pending Compliance Review'}</span>
+                <span className="text-[#687266]">Verified By:</span>
+                <span className="font-semibold text-[#17352B]">{activeShipment.verifiedBy || 'Pending Compliance Review'}</span>
               </div>
               {activeShipment.verificationDate && (
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Verification Timestamp:</span>
-                  <span className="font-medium text-slate-800">{formatDate(activeShipment.verificationDate)}</span>
+                  <span className="text-[#687266]">Verification Timestamp:</span>
+                  <span className="font-semibold text-[#17352B]">{formatDate(activeShipment.verificationDate)}</span>
                 </div>
               )}
               {activeShipment.notes && (
-                <div className="pt-2 border-t border-slate-100">
-                  <span className="text-slate-500 block mb-0.5">Notes / Waybill References:</span>
-                  <span className="text-slate-700 italic">{activeShipment.notes}</span>
+                <div className="pt-2 border-t border-[#D8CBB4]/50">
+                  <span className="text-[#687266] block mb-0.5 text-[11px]">Notes / Waybill References:</span>
+                  <span className="text-[#17352B] italic">{activeShipment.notes}</span>
                 </div>
               )}
             </div>

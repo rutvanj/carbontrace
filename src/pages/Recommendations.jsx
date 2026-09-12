@@ -53,11 +53,11 @@ export function Recommendations() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Decarbonization Pathways & Recommendations"
-        description="Machine learning and heuristic recommendations to transition high-emission freight, suppliers, and raw materials to lower-carbon alternatives."
+        title="Reduce: Decarbonization Pathways"
+        description="Machine learning and heuristic recommendations to transition high-emission freight corridors and transport modes to verified lower-carbon alternatives."
         badge={
-          <span className="badge bg-emerald-50 text-emerald-800 border border-emerald-200">
-            Actionable Scope 3 Reductions
+          <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/30">
+            Step 3: REDUCE (Algorithmic Decarbonization)
           </span>
         }
         actions={
@@ -75,10 +75,10 @@ export function Recommendations() {
             key={cat}
             type="button"
             onClick={() => setFilterCategory(cat)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
               filterCategory === cat
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                ? 'bg-[#0F3D2E] text-white shadow-subtle'
+                : 'bg-[#F8F3E8] text-[#17352B] hover:bg-[#E8DEC9] border border-[#D8CBB4]'
             }`}
           >
             {cat}
@@ -91,90 +91,92 @@ export function Recommendations() {
         {filtered.map((rec) => (
           <div
             key={rec.id}
-            className="card-base p-6 flex flex-col justify-between border-slate-200 hover:border-emerald-300 transition-colors"
+            className="card-base p-6 flex flex-col justify-between border border-[#D8CBB4] hover:border-[#0F3D2E] hover:shadow-natural transition-all duration-200"
           >
             <div>
               {/* Card Header */}
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div>
-                  <span className="text-[11px] font-bold text-emerald-700 uppercase tracking-wider">
+                  <span className="text-[11px] font-extrabold text-[#0F3D2E] uppercase tracking-wider">
                     {rec.category}
                   </span>
-                  <h2 className="text-base font-bold text-slate-900 mt-0.5 leading-snug">
+                  <h2 className="text-base font-extrabold text-[#17352B] mt-0.5 leading-snug">
                     {rec.title}
                   </h2>
                 </div>
-                <span className="badge bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0 font-bold text-xs">
+                <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/40 shrink-0 font-extrabold text-xs">
                   -{rec.reductionPercent}% CO₂e
                 </span>
               </div>
 
-              <p className="text-xs text-slate-600 leading-relaxed mb-5">
+              <p className="text-xs text-[#687266] leading-relaxed mb-5">
                 {rec.description}
               </p>
 
               {/* Before vs After Comparison Block */}
-              <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200/80 mb-4">
+              <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-[#FDFBF7] border border-[#D8CBB4] mb-4">
                 {/* Current Baseline */}
-                <div className="space-y-1.5 border-r border-slate-200 pr-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <div className="space-y-1.5 border-r border-[#D8CBB4]/70 pr-3">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#687266]">
                     Current Baseline
                   </span>
-                  <div className="text-xs font-semibold text-slate-800">
+                  <div className="text-xs font-bold text-[#17352B] truncate">
                     {rec.currentTransport}
                   </div>
-                  <div className="text-sm font-bold text-slate-700">
+                  <div className="text-sm font-extrabold text-[#991B1B]">
                     {rec.currentEmissionsDisplay}
                   </div>
                 </div>
 
                 {/* Alternative Solution */}
-                <div className="space-y-1.5 pl-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+                <div className="space-y-1.5 pl-3">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0F3D2E]">
                     Lower-Carbon Alternative
                   </span>
-                  <div className="text-xs font-semibold text-emerald-950">
+                  <div className="text-xs font-bold text-[#0F3D2E] truncate">
                     {rec.alternativeTransport}
                   </div>
-                  <div className="text-sm font-extrabold text-emerald-800">
+                  <div className="text-sm font-extrabold text-[#0F3D2E]">
                     {rec.projectedEmissionsDisplay}
                   </div>
                 </div>
               </div>
 
               {/* Net Potential Savings Pill */}
-              <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-center justify-between text-xs text-emerald-900 mb-4">
-                <span className="font-medium">Net Potential Saving:</span>
-                <span className="font-extrabold flex items-center gap-1 text-emerald-800">
+              <div className="p-3 rounded-xl bg-[#E2EBE5] border border-[#1F5D46]/30 flex items-center justify-between text-xs text-[#0F3D2E] mb-4">
+                <span className="font-bold">Net Potential Savings:</span>
+                <span className="font-extrabold flex items-center gap-1 text-[#0F3D2E]">
                   <TrendingDown className="w-4 h-4" />
                   {rec.potentialReductionDisplay} (-{rec.reductionPercent}%)
                 </span>
               </div>
 
               {/* Implementation Metadata */}
-              <div className="grid grid-cols-2 gap-2 text-[11px] text-slate-500 pt-3 border-t border-slate-100">
+              <div className="grid grid-cols-2 gap-2 text-xs text-[#687266] pt-3 border-t border-[#D8CBB4]/50">
                 <div>
-                  Complexity: <strong className="text-slate-800 font-semibold">{rec.implementationComplexity}</strong>
+                  Complexity: <strong className="text-[#17352B] font-bold">{rec.implementationComplexity}</strong>
                 </div>
                 <div>
-                  Cost Impact: <strong className="text-slate-800 font-semibold">{rec.estimatedCostImpact}</strong>
+                  Cost Impact: <strong className="text-[#17352B] font-bold">{rec.estimatedCostImpact}</strong>
                 </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400">
+            <div className="mt-5 pt-3 border-t border-[#D8CBB4]/50 flex items-center justify-between">
+              <span className="text-[11px] text-[#687266] font-medium">
                 Target: {rec.applicableSuppliers?.join(', ')}
               </span>
-              <button
-                type="button"
-                onClick={() => navigate(`/simulator?rec=${rec.id}`)}
-                className="btn-secondary text-xs py-1.5 px-3"
-              >
-                <span>Simulate Impact</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/simulator?rec=${rec.id}`)}
+                  className="btn-secondary text-xs py-1.5 px-3"
+                >
+                  <span>Simulate Impact</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         ))}

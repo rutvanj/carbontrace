@@ -12,8 +12,11 @@ import {
   Clock,
   Lightbulb,
   PlusCircle,
-  ExternalLink,
-  ChevronRight
+  ChevronRight,
+  ArrowRight,
+  CheckCircle,
+  Sparkles,
+  Navigation
 } from 'lucide-react';
 import {
   AreaChart,
@@ -40,6 +43,19 @@ import {
   shipmentService,
   recommendationService
 } from '../services/api';
+
+const EARTH_MODE_COLORS = {
+  Road: '#0F3D2E',
+  ROAD: '#0F3D2E',
+  Rail: '#1F5D46',
+  RAIL: '#1F5D46',
+  Sea: '#6F8068',
+  SEA: '#6F8068',
+  Air: '#C27803',
+  AIR: '#C27803',
+  Inland: '#8C6D46',
+  INLAND_WATERWAY: '#8C6D46'
+};
 
 export function Dashboard() {
   const [metrics, setMetrics] = useState(null);
@@ -77,13 +93,27 @@ export function Dashboard() {
         ]);
 
         setMetrics(metricsData);
-        setTimeline(timelineData);
-        setModes(modesData);
-        setTiers(tiersData);
-        setTopSuppliers(suppliersData);
-        setTopRoutes(routesData);
-        setRecentShipments(shipmentsData.slice(0, 5));
-        setRecommendations(recsData.slice(0, 3));
+        setTimeline(timelineData || []);
+        
+        // Enrich mode colors with earthy palette
+        const enrichedModes = (modesData || []).map((m) => ({
+          ...m,
+          color: EARTH_MODE_COLORS[m.mode] || EARTH_MODE_COLORS[m.transport_mode] || '#6F8068'
+        }));
+        setModes(enrichedModes);
+
+        // Enrich tier colors
+        const tierColors = ['#0F3D2E', '#1F5D46', '#6F8068'];
+        const enrichedTiers = (tiersData || []).map((t, i) => ({
+          ...t,
+          color: tierColors[i % tierColors.length]
+        }));
+        setTiers(enrichedTiers);
+
+        setTopSuppliers(suppliersData || []);
+        setTopRoutes(routesData || []);
+        setRecentShipments((shipmentsData || []).slice(0, 5));
+        setRecommendations((recsData || []).slice(0, 3));
       } catch (err) {
         console.error('Failed to load dashboard data:', err);
       } finally {
@@ -103,17 +133,17 @@ export function Dashboard() {
       {/* Top Header */}
       <PageHeader
         title="Executive Emissions Dashboard"
-        description="Corporate Scope 3 footprint overview across upstream suppliers, transport modalities, and auditable verification milestones."
+        description="Scope 3 Category 4 transportation & upstream emissions telemetry. Auditable accounting under GHG Protocol and GLEC Framework v3.0."
         badge={
-          <span className="badge bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/30">
             GHG Protocol Corporate Standard
           </span>
         }
         actions={
           <div className="flex items-center gap-2">
             <NavLink to="/verification" className="btn-secondary text-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Verify Records ({metrics.pendingEmissionsKg > 0 ? 'Pending' : '0'})</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0F3D2E]" />
+              <span>Verify Queue ({metrics.pendingShipments || 0} pending)</span>
             </NavLink>
             <NavLink to="/shipments/new" className="btn-primary text-xs">
               <PlusCircle className="w-3.5 h-3.5" />
@@ -123,12 +153,98 @@ export function Dashboard() {
         }
       />
 
+      {/* Flagship Journey: TRACE -> VERIFY -> REDUCE */}
+      <div className="card-base p-5 bg-gradient-to-r from-[#F8F3E8] via-[#E8DEC9]/50 to-[#F8F3E8] border border-[#D8CBB4] shadow-natural">
+        <div className="flex items-center justify-between pb-3 border-b border-[#D8CBB4]/60 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#0F3D2E] bg-[#E2EBE5] px-2 py-0.5 rounded-full border border-[#1F5D46]/20">
+              Operational Lifecycle
+            </span>
+            <h2 className="text-xs font-bold text-[#17352B]">CarbonTrace Protocol</h2>
+          </div>
+          <span className="text-[11px] text-[#687266] font-medium hidden sm:inline">
+            Scope 3 Category 4 Transportation Pipeline
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Step 1: TRACE */}
+          <div className="p-3.5 rounded-xl bg-white/90 border border-[#D8CBB4] flex flex-col justify-between hover:border-[#0F3D2E] transition-all">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-extrabold text-[#0F3D2E] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-[#0F3D2E] text-white flex items-center justify-center text-[10px]">1</span>
+                  TRACE
+                </span>
+                <Truck className="w-4 h-4 text-[#0F3D2E]" />
+              </div>
+              <p className="text-[11px] text-[#687266] leading-snug">
+                Log shipment waypoints, weight, and distance. Activity data is converted using GLEC/DEFRA emission factors.
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-[#D8CBB4]/40 flex items-center justify-between">
+              <span className="text-[10px] font-bold text-[#17352B]">{metrics.totalShipments} Shipments Tracked</span>
+              <NavLink to="/shipments/new" className="text-[11px] font-bold text-[#0F3D2E] hover:underline flex items-center gap-0.5">
+                <span>Log</span>
+                <ArrowRight className="w-3 h-3" />
+              </NavLink>
+            </div>
+          </div>
+
+          {/* Step 2: VERIFY */}
+          <div className="p-3.5 rounded-xl bg-white/90 border border-[#D8CBB4] flex flex-col justify-between hover:border-[#0F3D2E] transition-all">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-extrabold text-[#0F3D2E] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-[#0F3D2E] text-white flex items-center justify-center text-[10px]">2</span>
+                  VERIFY
+                </span>
+                <ShieldCheck className="w-4 h-4 text-[#0F3D2E]" />
+              </div>
+              <p className="text-[11px] text-[#687266] leading-snug">
+                Audit compliance gatekeeper. Only verified shipments enter official CSRD & SEC disclosures.
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-[#D8CBB4]/40 flex items-center justify-between">
+              <span className="text-[10px] font-bold text-[#17352B]">{formatPercent(metrics.verificationRatePercent)} Verified Rate</span>
+              <NavLink to="/verification" className="text-[11px] font-bold text-[#0F3D2E] hover:underline flex items-center gap-0.5">
+                <span>Review</span>
+                <ArrowRight className="w-3 h-3" />
+              </NavLink>
+            </div>
+          </div>
+
+          {/* Step 3: REDUCE */}
+          <div className="p-3.5 rounded-xl bg-white/90 border border-[#D8CBB4] flex flex-col justify-between hover:border-[#0F3D2E] transition-all">
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-extrabold text-[#0F3D2E] flex items-center gap-1.5">
+                  <span className="w-5 h-5 rounded-full bg-[#0F3D2E] text-white flex items-center justify-center text-[10px]">3</span>
+                  REDUCE
+                </span>
+                <Lightbulb className="w-4 h-4 text-[#D97706]" />
+              </div>
+              <p className="text-[11px] text-[#687266] leading-snug">
+                Algorithmic modal shift recommendations and What-if simulation to model low-carbon alternatives.
+              </p>
+            </div>
+            <div className="mt-3 pt-2 border-t border-[#D8CBB4]/40 flex items-center justify-between">
+              <span className="text-[10px] font-bold text-[#0F3D2E]">{formatEmissions(metrics.reductionPotentialKg)} Potential Savings</span>
+              <NavLink to="/recommendations" className="text-[11px] font-bold text-[#0F3D2E] hover:underline flex items-center gap-0.5">
+                <span>Explore</span>
+                <ArrowRight className="w-3 h-3" />
+              </NavLink>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Total Scope 3 CO₂e"
           value={formatEmissions(metrics.totalEmissionsKg)}
-          subtext="YTD gross emissions"
+          subtext="YTD gross transport emissions"
           icon={CloudFog}
           change="-3.4%"
           changeType="positive"
@@ -139,7 +255,7 @@ export function Dashboard() {
           subtext={`${formatPercent(metrics.verificationRatePercent)} verification rate`}
           icon={CheckCircle2}
           badge={
-            <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+            <span className="text-[10px] font-bold text-[#0F3D2E] bg-[#E2EBE5] px-2 py-0.5 rounded border border-[#1F5D46]/30">
               Auditable
             </span>
           }
@@ -149,20 +265,20 @@ export function Dashboard() {
           value={formatNumber(metrics.suppliersTracked)}
           subtext="Active Tier 1-3 network"
           icon={Building2}
-          change="+2"
+          change="+2 this quarter"
           changeType="neutral"
         />
         <StatCard
           title="High-Impact Suppliers"
-          value={formatNumber(metrics.highImpactSuppliersCount)}
-          subtext=">75% of emissions"
+          value={formatNumber(metrics.highImpactSuppliersCount || topSuppliers.filter(s => s.impact === 'High').length)}
+          subtext="Key decarbonization targets"
           icon={AlertTriangle}
           changeType="negative"
         />
         <StatCard
           title="Reduction Potential"
           value={formatEmissions(metrics.reductionPotentialKg)}
-          subtext="Via modal & supplier shifts"
+          subtext="Via modal & logistics shifts"
           icon={TrendingDown}
           change="18.2%"
           changeType="positive"
@@ -175,120 +291,134 @@ export function Dashboard() {
         <div className="lg:col-span-2">
           <ChartCard
             title="Emissions Over Time (Monthly Trend)"
-            subtitle="Verified official emissions vs pending unverified log submissions"
+            subtitle="Verified official emissions vs pending review logs"
             action={
               <div className="flex items-center gap-3 text-xs">
-                <span className="flex items-center gap-1.5 text-slate-600 font-medium">
-                  <span className="w-3 h-3 rounded-sm bg-emerald-600"></span> Verified
+                <span className="flex items-center gap-1.5 text-[#17352B] font-semibold">
+                  <span className="w-3 h-3 rounded-sm bg-[#0F3D2E]"></span> Verified Official
                 </span>
-                <span className="flex items-center gap-1.5 text-slate-600 font-medium">
-                  <span className="w-3 h-3 rounded-sm bg-amber-400"></span> Pending Review
+                <span className="flex items-center gap-1.5 text-[#687266] font-semibold">
+                  <span className="w-3 h-3 rounded-sm bg-[#D97706]"></span> Pending Review
                 </span>
               </div>
             }
             minHeight="h-80"
           >
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={timeline} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="verifiedGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#059669" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#059669" stopOpacity={0.0} />
-                  </linearGradient>
-                  <linearGradient id="pendingGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#fbbf24" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#fbbf24" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} />
-                <YAxis
-                  stroke="#94a3b8"
-                  fontSize={12}
-                  tickLine={false}
-                  tickFormatter={(v) => `${Math.round(v / 1000)}t`}
-                />
-                <Tooltip
-                  formatter={(value, name) => [
-                    formatEmissions(value),
-                    name === 'verified' ? 'Verified Emissions' : 'Pending Verification'
-                  ]}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderRadius: '8px',
-                    color: '#ffffff',
-                    border: 'none',
-                    fontSize: '12px'
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="verified"
-                  stroke="#059669"
-                  strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#verifiedGrad)"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="pending"
-                  stroke="#f59e0b"
-                  strokeWidth={2}
-                  fillOpacity={1}
-                  fill="url(#pendingGrad)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+            {timeline.length === 0 ? (
+              <div className="text-center py-12 text-xs text-[#687266]">
+                No historical emissions activity recorded yet.
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={timeline} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="verifiedGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#0F3D2E" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#0F3D2E" stopOpacity={0.0} />
+                    </linearGradient>
+                    <linearGradient id="pendingGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#D97706" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#D97706" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" stroke="#687266" fontSize={11} tickLine={false} />
+                  <YAxis
+                    stroke="#687266"
+                    fontSize={11}
+                    tickLine={false}
+                    tickFormatter={(v) => `${Math.round(v / 1000)}t`}
+                  />
+                  <Tooltip
+                    formatter={(value, name) => [
+                      formatEmissions(value),
+                      name === 'verified' ? 'Verified Emissions' : 'Pending Verification'
+                    ]}
+                    contentStyle={{
+                      backgroundColor: '#0F3D2E',
+                      borderRadius: '10px',
+                      color: '#F8F3E8',
+                      border: '1px solid #1F5D46',
+                      fontSize: '12px'
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="verified"
+                    stroke="#0F3D2E"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#verifiedGrad)"
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="pending"
+                    stroke="#D97706"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#pendingGrad)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </ChartCard>
         </div>
 
-        {/* Emissions by Transport Mode (Donut / Pie Chart) */}
+        {/* Emissions by Transport Mode (Donut Chart) */}
         <div>
           <ChartCard
             title="Emissions by Transport Mode"
             subtitle="Modal distribution of logistics freight"
             minHeight="h-80"
           >
-            <ResponsiveContainer width="100%" height={210}>
-              <PieChart>
-                <Pie
-                  data={modes}
-                  dataKey="emissionsKg"
-                  nameKey="mode"
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={55}
-                  outerRadius={80}
-                  paddingAngle={4}
-                >
-                  {modes.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(val) => [formatEmissions(val), 'Emissions']}
-                  contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderRadius: '8px',
-                    color: '#ffffff',
-                    border: 'none',
-                    fontSize: '12px'
-                  }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
+            {modes.length === 0 ? (
+              <div className="text-center py-12 text-xs text-[#687266]">
+                No transport modal data logged yet.
+              </div>
+            ) : (
+              <>
+                <ResponsiveContainer width="100%" height={200}>
+                  <PieChart>
+                    <Pie
+                      data={modes}
+                      dataKey="emissionsKg"
+                      nameKey="mode"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={80}
+                      paddingAngle={4}
+                    >
+                      {modes.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(val) => [formatEmissions(val), 'Emissions']}
+                      contentStyle={{
+                        backgroundColor: '#0F3D2E',
+                        borderRadius: '10px',
+                        color: '#F8F3E8',
+                        border: '1px solid #1F5D46',
+                        fontSize: '12px'
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
 
-            {/* Custom Mode Legend Grid */}
-            <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-slate-100">
-              {modes.map((mode) => (
-                <div key={mode.mode} className="flex items-center justify-between text-xs p-1 rounded bg-slate-50">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: mode.color }} />
-                    <span className="font-medium text-slate-700">{mode.mode}</span>
-                  </div>
-                  <span className="font-semibold text-slate-900">{mode.share}%</span>
+                {/* Custom Mode Legend Grid */}
+                <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-[#D8CBB4]/60">
+                  {modes.map((mode) => (
+                    <div key={mode.mode} className="flex items-center justify-between text-xs p-1.5 rounded-lg bg-white/80 border border-[#D8CBB4]/50">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: mode.color }} />
+                        <span className="font-semibold text-[#17352B]">{mode.mode}</span>
+                      </div>
+                      <span className="font-bold text-[#0F3D2E]">{mode.share}%</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
           </ChartCard>
         </div>
       </div>
@@ -305,14 +435,14 @@ export function Dashboard() {
             <ResponsiveContainer width="100%" height={190}>
               <BarChart data={tiers} layout="vertical" margin={{ left: 10, right: 20, top: 10, bottom: 0 }}>
                 <XAxis type="number" hide />
-                <YAxis dataKey="tier" type="category" stroke="#475569" fontSize={12} tickLine={false} width={60} />
+                <YAxis dataKey="tier" type="category" stroke="#17352B" fontSize={11} tickLine={false} width={60} />
                 <Tooltip
                   formatter={(val) => [formatEmissions(val), 'Emissions']}
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderRadius: '8px',
-                    color: '#ffffff',
-                    border: 'none',
+                    backgroundColor: '#0F3D2E',
+                    borderRadius: '10px',
+                    color: '#F8F3E8',
+                    border: '1px solid #1F5D46',
                     fontSize: '12px'
                   }}
                 />
@@ -324,7 +454,7 @@ export function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
 
-            <div className="text-xs text-slate-500 mt-2 flex justify-between border-t border-slate-100 pt-2 font-medium">
+            <div className="text-xs text-[#687266] mt-2 flex justify-between border-t border-[#D8CBB4]/60 pt-2 font-semibold">
               <span>Tier 1 (Direct Mfrs): 82.8%</span>
               <span>Tier 2 & 3: 17.2%</span>
             </div>
@@ -333,14 +463,14 @@ export function Dashboard() {
 
         {/* Top Emission Suppliers Table */}
         <div className="lg:col-span-2">
-          <div className="card-base p-5 flex flex-col justify-between h-full">
+          <div className="card-base p-5 flex flex-col justify-between h-full border border-[#D8CBB4]">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-sm font-semibold text-slate-900">Top Emission Suppliers</h2>
-                  <p className="text-xs text-slate-500">Key contributors to current carbon footprint</p>
+                  <h2 className="text-sm font-bold text-[#17352B]">Top Emission Suppliers</h2>
+                  <p className="text-xs text-[#687266]">Key contributors to current carbon footprint</p>
                 </div>
-                <NavLink to="/suppliers" className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+                <NavLink to="/suppliers" className="text-xs font-bold text-[#0F3D2E] hover:underline flex items-center gap-1">
                   <span>View All Suppliers</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </NavLink>
@@ -349,31 +479,31 @@ export function Dashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500 font-semibold uppercase">
-                      <th className="py-2 px-2">Supplier</th>
-                      <th className="py-2 px-2">Tier</th>
-                      <th className="py-2 px-2 text-right">Emissions</th>
-                      <th className="py-2 px-2 text-right">% of Total</th>
-                      <th className="py-2 px-2 text-center">Impact</th>
+                    <tr className="border-b border-[#D8CBB4] text-[#687266] font-bold uppercase text-[11px]">
+                      <th className="py-2.5 px-2">Supplier</th>
+                      <th className="py-2.5 px-2">Tier</th>
+                      <th className="py-2.5 px-2 text-right">Emissions</th>
+                      <th className="py-2.5 px-2 text-right">% of Total</th>
+                      <th className="py-2.5 px-2 text-center">Impact</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-[#D8CBB4]/50">
                     {topSuppliers.map((supplier) => (
                       <tr
                         key={supplier.id}
-                        className="hover:bg-slate-50 cursor-pointer"
+                        className="hover:bg-[#E8DEC9]/50 cursor-pointer transition-colors"
                         onClick={() => navigate(`/suppliers/${supplier.id}`)}
                       >
-                        <td className="py-2.5 px-2 font-semibold text-slate-900 flex items-center gap-1.5">
+                        <td className="py-2.5 px-2 font-bold text-[#17352B] flex items-center gap-1.5">
                           <span>{supplier.name}</span>
                         </td>
                         <td className="py-2.5 px-2">
                           <StatusBadge status={supplier.tier} />
                         </td>
-                        <td className="py-2.5 px-2 text-right font-medium text-slate-800">
+                        <td className="py-2.5 px-2 text-right font-bold text-[#0F3D2E]">
                           {formatEmissions(supplier.emissionsKg)}
                         </td>
-                        <td className="py-2.5 px-2 text-right font-medium text-slate-600">
+                        <td className="py-2.5 px-2 text-right font-semibold text-[#687266]">
                           {formatPercent(supplier.percentOfTotal)}
                         </td>
                         <td className="py-2.5 px-2 text-center">
@@ -392,13 +522,13 @@ export function Dashboard() {
       {/* Bottom Row: Top Routes & Recent Shipments */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Emission Routes */}
-        <div className="card-base p-5">
+        <div className="card-base p-5 border border-[#D8CBB4]">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">Top Emission Routes</h2>
-              <p className="text-xs text-slate-500">Highest intensity logistics corridors</p>
+              <h2 className="text-sm font-bold text-[#17352B]">Top Emission Routes</h2>
+              <p className="text-xs text-[#687266]">Highest intensity logistics corridors</p>
             </div>
-            <NavLink to="/analytics" className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+            <NavLink to="/analytics" className="text-xs font-bold text-[#0F3D2E] hover:underline flex items-center gap-1">
               <span>Corridor Analytics</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </NavLink>
@@ -406,23 +536,23 @@ export function Dashboard() {
 
           <div className="space-y-3">
             {topRoutes.map((rt) => (
-              <div key={rt.id} className="p-3 rounded-lg bg-slate-50/80 border border-slate-200/70 flex items-center justify-between">
+              <div key={rt.id} className="p-3 rounded-xl bg-white border border-[#D8CBB4] flex items-center justify-between shadow-subtle">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-xs text-slate-900">{rt.origin}</span>
-                    <span className="text-slate-400">→</span>
-                    <span className="font-semibold text-xs text-slate-900">{rt.destination}</span>
+                    <span className="font-bold text-xs text-[#17352B]">{rt.origin}</span>
+                    <span className="text-[#687266]">→</span>
+                    <span className="font-bold text-xs text-[#17352B]">{rt.destination}</span>
                   </div>
-                  <div className="text-[11px] text-slate-500 flex items-center gap-2">
-                    <span className="font-medium text-slate-700 bg-white px-1.5 py-0.5 rounded border border-slate-200">
+                  <div className="text-[11px] text-[#687266] flex items-center gap-2">
+                    <span className="font-bold text-[#0F3D2E] bg-[#E2EBE5] px-2 py-0.5 rounded border border-[#1F5D46]/30">
                       {rt.mode}
                     </span>
-                    <span>Intensity: {rt.intensity}</span>
+                    <span>Intensity: <strong>{rt.intensity}</strong></span>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold text-slate-900">{formatEmissions(rt.emissionsKg)}</div>
-                  <div className="text-[10px] text-slate-500">{rt.count} shipments logged</div>
+                  <div className="text-xs font-extrabold text-[#0F3D2E]">{formatEmissions(rt.emissionsKg)}</div>
+                  <div className="text-[10px] text-[#687266] font-medium">{rt.count} shipments logged</div>
                 </div>
               </div>
             ))}
@@ -430,33 +560,33 @@ export function Dashboard() {
         </div>
 
         {/* Recent Shipments Feed */}
-        <div className="card-base p-5">
+        <div className="card-base p-5 border border-[#D8CBB4]">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900">Recent Shipment Activity</h2>
-              <p className="text-xs text-slate-500">Real-time logistics logs awaiting or verified</p>
+              <h2 className="text-sm font-bold text-[#17352B]">Recent Shipment Activity</h2>
+              <p className="text-xs text-[#687266]">Real-time logistics logs awaiting or verified</p>
             </div>
-            <NavLink to="/shipments" className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+            <NavLink to="/shipments" className="text-xs font-bold text-[#0F3D2E] hover:underline flex items-center gap-1">
               <span>View All ({recentShipments.length}+)</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </NavLink>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[#D8CBB4]/50">
             {recentShipments.map((shipment) => (
               <div key={shipment.id} className="py-2.5 flex items-center justify-between">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-xs text-slate-900">{shipment.supplierName}</span>
-                    <span className="text-[10px] text-slate-400">({shipment.id})</span>
+                    <span className="font-bold text-xs text-[#17352B]">{shipment.supplierName}</span>
+                    <span className="text-[11px] text-[#687266]">({shipment.id})</span>
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    {shipment.origin} → {shipment.destination} • <span className="font-medium text-slate-700">{shipment.transportMode}</span>
+                  <div className="text-[11px] text-[#687266]">
+                    {shipment.origin} → {shipment.destination} • <span className="font-bold text-[#17352B]">{shipment.transportMode}</span>
                   </div>
                 </div>
                 <div className="text-right flex flex-col items-end gap-1">
-                  <span className="text-xs font-bold text-slate-900">
-                    {formatEmissions(shipment.calculatedEmissionsKg)}
+                  <span className="text-xs font-extrabold text-[#0F3D2E]">
+                    {formatEmissions(shipment.calculatedEmissionsKg || shipment.emissions)}
                   </span>
                   <StatusBadge status={shipment.status} />
                 </div>
@@ -467,24 +597,24 @@ export function Dashboard() {
       </div>
 
       {/* Highlighted Reduction Opportunities Banner */}
-      <div className="card-base p-5 bg-gradient-to-r from-emerald-50/70 via-white to-slate-50 border-emerald-200/80">
+      <div className="card-base p-5 bg-gradient-to-r from-[#E2EBE5] via-[#F8F3E8] to-[#E8DEC9] border border-[#1F5D46]/40 shadow-natural">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-600 text-white shrink-0 shadow-sm">
-              <Lightbulb className="w-5 h-5" />
+            <div className="p-2.5 rounded-xl bg-[#0F3D2E] text-white shrink-0 shadow-sm">
+              <Lightbulb className="w-5 h-5 text-[#FEF3C7]" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">
+              <h2 className="text-sm font-extrabold text-[#17352B]">
                 Actionable Reduction Opportunities Identified
               </h2>
-              <p className="text-xs text-slate-600 mt-0.5 max-w-2xl">
-                CarbonTrace AI detected <strong>4 high-impact decarbonization pathways</strong> across your supply chain with potential savings of <strong>{formatEmissions(metrics.reductionPotentialKg)}</strong>.
+              <p className="text-xs text-[#17352B] mt-0.5 max-w-2xl leading-relaxed">
+                CarbonTrace AI detected high-impact decarbonization pathways across your transport corridors with potential savings of <strong>{formatEmissions(metrics.reductionPotentialKg)}</strong>.
               </p>
             </div>
           </div>
           <NavLink
             to="/recommendations"
-            className="btn-primary text-xs shrink-0 self-start sm:self-center"
+            className="btn-primary text-xs shrink-0 self-start sm:self-center py-2 px-4"
           >
             <span>Explore Decarbonization Pathways</span>
             <ArrowUpRight className="w-3.5 h-3.5" />

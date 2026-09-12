@@ -67,10 +67,19 @@ export function WhatIfSimulator() {
     setRenewablePercent(0);
   };
 
+  // Scenario presets
+  const applyPreset = (presetMode, presetDist, presetWeight, presetRecycled, presetRenewable) => {
+    setMode(presetMode);
+    setDistance(presetDist);
+    setWeight(presetWeight);
+    setRecycledPercent(presetRecycled);
+    setRenewablePercent(presetRenewable);
+  };
+
   // Comparison Chart Data
   const chartData = result ? [
-    { name: 'Baseline (Diesel Road)', emissions: result.currentEmissionsKg, fill: '#64748b' },
-    { name: 'Simulated Scenario', emissions: result.projectedEmissionsKg, fill: '#059669' }
+    { name: 'Baseline (Diesel Road)', emissions: result.currentEmissionsKg, fill: '#687266' },
+    { name: 'Simulated Scenario', emissions: result.projectedEmissionsKg, fill: '#0F3D2E' }
   ] : [];
 
   return (
@@ -79,7 +88,7 @@ export function WhatIfSimulator() {
         title="What-if Decarbonization Simulator"
         description="Model the emission reduction impact of changing logistics modalities, shortening supply distances, increasing recycled material feedstocks, and scaling renewable energy."
         badge={
-          <span className="badge bg-emerald-50 text-emerald-800 border border-emerald-200">
+          <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/30">
             Interactive Scenario Sandbox
           </span>
         }
@@ -95,27 +104,53 @@ export function WhatIfSimulator() {
         }
       />
 
-      {/* Disclaimed note */}
-      <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+      {/* Disclaimed note & Scenario Presets */}
+      <div className="p-4 rounded-xl bg-[#F8F3E8] border border-[#D8CBB4] text-xs text-[#17352B] flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-subtle">
         <div className="flex items-center gap-2">
-          <Info className="w-4 h-4 text-slate-500 shrink-0" />
-          <span>
-            <strong>Isolated Sandbox Model:</strong> Calculations here provide immediate sensitivity testing. The authoritative calculation will be powered by the FastAPI backend.
+          <Info className="w-4 h-4 text-[#0F3D2E] shrink-0" />
+          <span className="text-xs text-[#687266]">
+            <strong>Sensitivity Engine:</strong> Instant scenario modeling grounded in activity tonne-km factors.
           </span>
+        </div>
+
+        {/* Quick Presets */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-[11px] font-bold text-[#687266]">Presets:</span>
+          <button
+            type="button"
+            onClick={() => applyPreset('Rail', 750, 24, 25, 40)}
+            className="px-2.5 py-1 rounded-lg bg-white border border-[#D8CBB4] hover:bg-[#E8DEC9] text-[11px] font-semibold text-[#17352B] transition-colors"
+          >
+            Rail Freight Shift
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset('Road', 180, 20, 60, 80)}
+            className="px-2.5 py-1 rounded-lg bg-white border border-[#D8CBB4] hover:bg-[#E8DEC9] text-[11px] font-semibold text-[#17352B] transition-colors"
+          >
+            Nearshore Circular
+          </button>
+          <button
+            type="button"
+            onClick={() => applyPreset('Sea', 3500, 45, 10, 20)}
+            className="px-2.5 py-1 rounded-lg bg-white border border-[#D8CBB4] hover:bg-[#E8DEC9] text-[11px] font-semibold text-[#17352B] transition-colors"
+          >
+            Maritime Bulk
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Interactive Scenario Controls */}
-        <div className="card-base p-6 space-y-5 bg-white">
-          <div className="border-b border-slate-100 pb-3">
-            <h2 className="text-sm font-bold text-slate-900">Scenario Parameter Sliders</h2>
-            <p className="text-xs text-slate-500">Adjust variables to calculate projected Scope 3 savings</p>
+        <div className="card-base p-6 space-y-5 border border-[#D8CBB4] bg-[#F8F3E8]">
+          <div className="border-b border-[#D8CBB4]/60 pb-3">
+            <h2 className="text-sm font-bold text-[#17352B]">Scenario Parameter Sliders</h2>
+            <p className="text-xs text-[#687266]">Adjust variables to calculate projected Scope 3 savings</p>
           </div>
 
           {/* 1. Transport Mode */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-slate-700">
+            <label className="block text-xs font-bold text-[#17352B]">
               Alternative Transport Mode
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -124,10 +159,10 @@ export function WhatIfSimulator() {
                   key={m}
                   type="button"
                   onClick={() => setMode(m)}
-                  className={`py-2 px-3 text-xs font-semibold rounded-lg border transition-all ${
+                  className={`py-2 px-3 text-xs font-bold rounded-xl border transition-all ${
                     mode === m
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-[#0F3D2E] text-white border-[#0F3D2E] shadow-subtle'
+                      : 'bg-white text-[#17352B] border-[#D8CBB4] hover:bg-[#E8DEC9]'
                   }`}
                 >
                   {m}
@@ -139,8 +174,8 @@ export function WhatIfSimulator() {
           {/* 2. Distance Slider */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-700">Transport Distance</span>
-              <span className="font-bold text-emerald-700">{distance} km</span>
+              <span className="font-bold text-[#17352B]">Transport Distance</span>
+              <span className="font-extrabold text-[#0F3D2E]">{distance} km</span>
             </div>
             <input
               type="range"
@@ -149,9 +184,9 @@ export function WhatIfSimulator() {
               step="50"
               value={distance}
               onChange={(e) => setDistance(Number(e.target.value))}
-              className="w-full accent-emerald-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+              className="w-full accent-[#0F3D2E] h-1.5 bg-[#D8CBB4] rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
+            <div className="flex justify-between text-[10px] text-[#687266] font-semibold">
               <span>50 km</span>
               <span>5,000 km</span>
             </div>
@@ -160,8 +195,8 @@ export function WhatIfSimulator() {
           {/* 3. Shipment Weight */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-700">Shipment Weight</span>
-              <span className="font-bold text-emerald-700">{weight} tonnes</span>
+              <span className="font-bold text-[#17352B]">Shipment Weight</span>
+              <span className="font-extrabold text-[#0F3D2E]">{weight} tonnes</span>
             </div>
             <input
               type="range"
@@ -170,9 +205,9 @@ export function WhatIfSimulator() {
               step="1"
               value={weight}
               onChange={(e) => setWeight(Number(e.target.value))}
-              className="w-full accent-emerald-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+              className="w-full accent-[#0F3D2E] h-1.5 bg-[#D8CBB4] rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
+            <div className="flex justify-between text-[10px] text-[#687266] font-semibold">
               <span>1 t</span>
               <span>100 t</span>
             </div>
@@ -181,8 +216,8 @@ export function WhatIfSimulator() {
           {/* 4. Recycled Material % */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-700">Recycled Content Blend %</span>
-              <span className="font-bold text-emerald-700">{recycledPercent}%</span>
+              <span className="font-bold text-[#17352B]">Recycled Content Blend %</span>
+              <span className="font-extrabold text-[#0F3D2E]">{recycledPercent}%</span>
             </div>
             <input
               type="range"
@@ -191,9 +226,9 @@ export function WhatIfSimulator() {
               step="5"
               value={recycledPercent}
               onChange={(e) => setRecycledPercent(Number(e.target.value))}
-              className="w-full accent-emerald-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+              className="w-full accent-[#0F3D2E] h-1.5 bg-[#D8CBB4] rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
+            <div className="flex justify-between text-[10px] text-[#687266] font-semibold">
               <span>0% (Virgin Primary)</span>
               <span>100% (Fully Circular)</span>
             </div>
@@ -202,8 +237,8 @@ export function WhatIfSimulator() {
           {/* 5. Renewable Energy % */}
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
-              <span className="font-semibold text-slate-700">Supplier Renewable Energy Share %</span>
-              <span className="font-bold text-emerald-700">{renewablePercent}%</span>
+              <span className="font-bold text-[#17352B]">Supplier Renewable Energy Share %</span>
+              <span className="font-extrabold text-[#0F3D2E]">{renewablePercent}%</span>
             </div>
             <input
               type="range"
@@ -212,9 +247,9 @@ export function WhatIfSimulator() {
               step="5"
               value={renewablePercent}
               onChange={(e) => setRenewablePercent(Number(e.target.value))}
-              className="w-full accent-emerald-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+              className="w-full accent-[#0F3D2E] h-1.5 bg-[#D8CBB4] rounded-lg cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-400">
+            <div className="flex justify-between text-[10px] text-[#687266] font-semibold">
               <span>0% (Standard Grid)</span>
               <span>100% (Solar/Wind PPA)</span>
             </div>
@@ -239,7 +274,7 @@ export function WhatIfSimulator() {
               <StatCard
                 title="Net Reduction"
                 value={formatEmissions(result.reductionKg)}
-                subtext="Absolute carbon avoided"
+                subtext="Avoided carbon"
                 icon={TrendingDown}
                 changeType="positive"
               />
@@ -248,7 +283,7 @@ export function WhatIfSimulator() {
                 value={formatPercent(result.reductionPercent)}
                 subtext="Relative decrease"
                 badge={
-                  <span className="badge bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">
+                  <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/30 font-bold">
                     -{result.reductionPercent}%
                   </span>
                 }
@@ -264,15 +299,15 @@ export function WhatIfSimulator() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={chartData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#64748b" fontSize={12} tickLine={false} />
-                <YAxis stroke="#64748b" fontSize={12} tickLine={false} tickFormatter={(v) => `${Math.round(v)} kg`} />
+                <XAxis dataKey="name" stroke="#17352B" fontSize={11} tickLine={false} />
+                <YAxis stroke="#687266" fontSize={11} tickLine={false} tickFormatter={(v) => `${Math.round(v)} kg`} />
                 <Tooltip
                   formatter={(val) => [formatEmissions(val), 'Emissions']}
                   contentStyle={{
-                    backgroundColor: '#0f172a',
-                    borderRadius: '8px',
-                    color: '#ffffff',
-                    border: 'none',
+                    backgroundColor: '#0F3D2E',
+                    borderRadius: '10px',
+                    color: '#F8F3E8',
+                    border: '1px solid #1F5D46',
                     fontSize: '12px'
                   }}
                 />
@@ -286,12 +321,12 @@ export function WhatIfSimulator() {
           </ChartCard>
 
           {/* Scenario Synthesis Summary */}
-          <div className="card-base p-5 bg-gradient-to-r from-emerald-50/60 via-white to-slate-50 border-emerald-200">
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
-              Scenario Analysis & Feasibility
+          <div className="card-base p-5 bg-gradient-to-r from-[#E2EBE5] via-[#F8F3E8] to-[#E8DEC9] border border-[#1F5D46]/40 shadow-subtle">
+            <h3 className="text-xs font-bold text-[#0F3D2E] uppercase tracking-wider mb-1.5">
+              Decarbonization Feasibility Insight
             </h3>
-            <p className="text-xs text-slate-700 leading-relaxed">
-              Switching from Road to <strong>{mode}</strong> across <strong>{distance} km</strong> while requiring <strong>{recycledPercent}% recycled materials</strong> and <strong>{renewablePercent}% clean power</strong> eliminates approximately <strong>{formatEmissions(result?.reductionKg)}</strong> per batch, delivering an estimated <strong>{result?.reductionPercent}% decarbonization</strong>.
+            <p className="text-xs text-[#17352B] leading-relaxed">
+              Transitioning this transport stream to <strong>{mode}</strong> over <strong>{distance} km</strong> while requiring <strong>{recycledPercent}% recycled materials</strong> and <strong>{renewablePercent}% clean power</strong> eliminates approximately <strong>{formatEmissions(result?.reductionKg)}</strong> per delivery, yielding an estimated <strong>{result?.reductionPercent}% emissions reduction</strong>.
             </p>
           </div>
         </div>

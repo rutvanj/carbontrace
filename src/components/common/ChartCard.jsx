@@ -14,9 +14,9 @@ export function ChartCard({
     <div className={cn('card-base p-5 flex flex-col', className)}>
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
-          <h2 className="text-sm font-semibold text-slate-800 tracking-tight">{title}</h2>
+          <h2 className="text-sm font-bold text-[#17352B] tracking-tight">{title}</h2>
           {subtitle && (
-            <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+            <p className="text-xs text-[#687266] mt-0.5">{subtitle}</p>
           )}
         </div>
         {action && <div className="shrink-0">{action}</div>}
@@ -27,7 +27,7 @@ export function ChartCard({
       </div>
 
       {footer && (
-        <div className="mt-4 pt-3 border-t border-slate-100 text-xs text-slate-400">
+        <div className="mt-4 pt-3 border-t border-[#D8CBB4]/60 text-xs text-[#687266]">
           {footer}
         </div>
       )}

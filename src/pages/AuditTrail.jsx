@@ -6,6 +6,7 @@ import {
   Filter,
   Sparkles,
   Download,
+  FileText,
   Eye,
   CheckCircle2,
   Clock,
@@ -70,8 +71,8 @@ export function AuditTrail() {
       header: 'Audit ID & Hash',
       render: (val, row) => (
         <div>
-          <span className="font-mono font-bold text-xs text-slate-900">{val}</span>
-          <div className="font-mono text-[10px] text-slate-400">{row.auditHash}</div>
+          <span className="font-mono font-bold text-xs text-[#17352B]">{val}</span>
+          <div className="font-mono text-[10px] text-[#6F8068]">{row.auditHash}</div>
         </div>
       )
     },
@@ -80,8 +81,8 @@ export function AuditTrail() {
       header: 'Supplier & Shipment',
       render: (val, row) => (
         <div>
-          <div className="font-semibold text-slate-900">{val}</div>
-          <div className="text-[11px] text-slate-500">{row.shipmentId} • {row.originDestination}</div>
+          <div className="font-semibold text-[#17352B]">{val}</div>
+          <div className="text-[11px] text-[#687266]">{row.shipmentId} • {row.originDestination}</div>
         </div>
       )
     },
@@ -89,7 +90,7 @@ export function AuditTrail() {
       key: 'inputData',
       header: 'Telemetry Input Data',
       render: (val) => (
-        <span className="text-xs text-slate-700 truncate max-w-[200px] inline-block">
+        <span className="text-xs text-[#17352B] truncate max-w-[200px] inline-block">
           {val}
         </span>
       )
@@ -99,8 +100,8 @@ export function AuditTrail() {
       header: 'Factor & Standard',
       render: (val, row) => (
         <div>
-          <div className="font-mono font-semibold text-[11px] text-slate-800">{row.emissionFactor}</div>
-          <div className="text-[10px] text-slate-500 truncate max-w-[170px]">{val}</div>
+          <div className="font-mono font-bold text-[11px] text-[#0F3D2E]">{row.emissionFactor}</div>
+          <div className="text-[10px] text-[#687266] truncate max-w-[170px]">{val}</div>
         </div>
       )
     },
@@ -108,7 +109,7 @@ export function AuditTrail() {
       key: 'calculationMethod',
       header: 'Calculation Model',
       render: (val) => (
-        <span className="text-xs text-slate-600 truncate max-w-[150px] inline-block">
+        <span className="text-xs text-[#687266] truncate max-w-[150px] inline-block">
           {val}
         </span>
       )
@@ -118,8 +119,8 @@ export function AuditTrail() {
       header: 'AI Provenance',
       render: (val, row) => (
         <div className="flex items-center gap-1.5">
-          <span className="badge bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px]">
-            <Sparkles className="w-3 h-3 text-indigo-600" />
+          <span className="badge bg-[#E8DEC9] text-[#0F3D2E] border border-[#D8CBB4] text-[10px]">
+            <Sparkles className="w-3 h-3 text-[#0F3D2E]" />
             <span>{row.aiConfidence}</span>
           </span>
         </div>
@@ -129,7 +130,7 @@ export function AuditTrail() {
       key: 'verifiedBy',
       header: 'Verified By',
       render: (val) => (
-        <span className="text-xs font-medium text-slate-700">{val}</span>
+        <span className="text-xs font-medium text-[#17352B]">{val}</span>
       )
     },
     {
@@ -143,7 +144,7 @@ export function AuditTrail() {
       header: 'Timestamp',
       align: 'right',
       render: (val) => (
-        <span className="text-xs font-mono text-slate-500">{val}</span>
+        <span className="text-xs font-mono text-[#687266]">{val}</span>
       )
     },
     {
@@ -154,7 +155,7 @@ export function AuditTrail() {
         <button
           type="button"
           onClick={() => setInspectAudit(row)}
-          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+          className="p-1.5 rounded-lg text-[#687266] hover:text-[#0F3D2E] hover:bg-[#E8DEC9]/50 transition-colors"
           title="Inspect Full Provenance"
         >
           <Eye className="w-4 h-4" />
@@ -169,19 +170,29 @@ export function AuditTrail() {
         title="Audit Trail & ESG Provenance"
         description="Immutable record of activity data, emission factor citations, AI extraction confidence, and compliance verifications for ESG statutory filings."
         badge={
-          <span className="badge bg-slate-100 text-slate-800 border border-slate-300">
-            CSRD / SEC / GHG Standard Ready
+          <span className="badge bg-[#E2EBE5] text-[#0F3D2E] border border-[#1F5D46]/30 font-semibold">
+            CSRD / SEC / GHG Protocol Ready
           </span>
         }
         actions={
-          <button
-            type="button"
-            onClick={() => exportService.downloadCsv()}
-            className="btn-secondary text-xs"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export Audit Ledger</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => exportService.downloadCsv()}
+              className="btn-secondary text-xs"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => exportService.downloadPdf()}
+              className="btn-primary text-xs"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Export Audit Ledger</span>
+            </button>
+          </div>
         }
       />
 
@@ -245,70 +256,70 @@ export function AuditTrail() {
       >
         {inspectAudit && (
           <div className="space-y-4 text-xs">
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 grid grid-cols-2 gap-3">
+            <div className="p-3 rounded-lg bg-[#E8DEC9]/50 border border-[#D8CBB4] grid grid-cols-2 gap-3">
               <div>
-                <span className="text-slate-400 block mb-0.5">Supplier:</span>
-                <span className="font-semibold text-slate-900">{inspectAudit.supplierName}</span>
+                <span className="text-[#687266] block mb-0.5">Supplier:</span>
+                <span className="font-semibold text-[#17352B]">{inspectAudit.supplierName}</span>
               </div>
               <div>
-                <span className="text-slate-400 block mb-0.5">Associated Shipment:</span>
-                <span className="font-mono font-semibold text-slate-900">{inspectAudit.shipmentId}</span>
+                <span className="text-[#687266] block mb-0.5">Associated Shipment:</span>
+                <span className="font-mono font-semibold text-[#17352B]">{inspectAudit.shipmentId}</span>
               </div>
               <div className="col-span-2">
-                <span className="text-slate-400 block mb-0.5">Origin & Waypoints:</span>
-                <span className="font-medium text-slate-800">{inspectAudit.originDestination}</span>
+                <span className="text-[#687266] block mb-0.5">Origin & Waypoints:</span>
+                <span className="font-medium text-[#17352B]">{inspectAudit.originDestination}</span>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-4 space-y-2.5">
-              <h3 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">
+            <div className="border border-[#D8CBB4] rounded-lg p-4 space-y-2.5 bg-[#F8F3E8]">
+              <h3 className="font-bold text-[#0F3D2E] uppercase tracking-wider text-[11px]">
                 Factor Citation & Calculation Standard
               </h3>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Applied Emission Factor:</span>
-                <span className="font-mono font-bold text-emerald-800">{inspectAudit.emissionFactor}</span>
+                <span className="text-[#687266]">Applied Emission Factor:</span>
+                <span className="font-mono font-bold text-[#0F3D2E]">{inspectAudit.emissionFactor}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Official Factor Source:</span>
-                <span className="font-medium text-slate-800">{inspectAudit.factorSource}</span>
+                <span className="text-[#687266]">Official Factor Source:</span>
+                <span className="font-medium text-[#17352B]">{inspectAudit.factorSource}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Calculation Method:</span>
-                <span className="font-medium text-slate-800">{inspectAudit.calculationMethod}</span>
+                <span className="text-[#687266]">Calculation Method:</span>
+                <span className="font-medium text-[#17352B]">{inspectAudit.calculationMethod}</span>
               </div>
             </div>
 
-            <div className="border border-slate-200 rounded-lg p-4 space-y-2.5">
-              <h3 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">
+            <div className="border border-[#D8CBB4] rounded-lg p-4 space-y-2.5 bg-[#F8F3E8]">
+              <h3 className="font-bold text-[#0F3D2E] uppercase tracking-wider text-[11px]">
                 AI Extraction & Verifier Attestation
               </h3>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">AI Involvement:</span>
-                <span className="font-medium text-slate-800">{inspectAudit.aiInvolvement}</span>
+                <span className="text-[#687266]">AI Involvement:</span>
+                <span className="font-medium text-[#17352B]">{inspectAudit.aiInvolvement}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">AI Confidence Score:</span>
-                <span className="font-bold text-indigo-700">{inspectAudit.aiConfidence}</span>
+                <span className="text-[#687266]">AI Confidence Score:</span>
+                <span className="font-bold text-[#0F3D2E]">{inspectAudit.aiConfidence}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-slate-500">Auditor / Verified By:</span>
-                <span className="font-medium text-slate-800">{inspectAudit.verifiedBy}</span>
+                <span className="text-[#687266]">Auditor / Verified By:</span>
+                <span className="font-medium text-[#17352B]">{inspectAudit.verifiedBy}</span>
               </div>
 
-              <div className="flex justify-between font-mono text-[11px] pt-2 border-t border-slate-100">
-                <span className="text-slate-400">Timestamp:</span>
-                <span className="text-slate-600">{inspectAudit.timestamp}</span>
+              <div className="flex justify-between font-mono text-[11px] pt-2 border-t border-[#D8CBB4]">
+                <span className="text-[#6F8068]">Timestamp:</span>
+                <span className="text-[#17352B]">{inspectAudit.timestamp}</span>
               </div>
 
               <div className="flex justify-between font-mono text-[11px]">
-                <span className="text-slate-400">Cryptographic Hash:</span>
-                <span className="text-slate-600">{inspectAudit.auditHash}</span>
+                <span className="text-[#6F8068]">Cryptographic Hash:</span>
+                <span className="text-[#17352B] truncate max-w-[280px]">{inspectAudit.auditHash}</span>
               </div>
             </div>
           </div>
