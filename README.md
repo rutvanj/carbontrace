@@ -1,46 +1,24 @@
-# CarbonTrace AI 
+# CarbonTrace AI
 
-### Trace. Verify. Reduce.
+## Trace. Verify. Reduce.
 
-CarbonTrace AI is a transportation emissions tracking and verification platform designed to help organizations measure, audit, and reduce **Scope 3 Category 4 — Upstream Transportation & Distribution** emissions.
+CarbonTrace AI is a transportation emissions tracking, verification, and reduction platform designed to help organizations measure and manage Scope 3 Category 4 — Upstream Transportation and Distribution emissions.
 
-Instead of treating carbon reporting as a static calculation, CarbonTrace creates an auditable workflow:
+The platform transforms shipment data into traceable carbon insights, introduces a human-in-the-loop verification workflow, and identifies opportunities to reduce transportation-related emissions.
 
-**TRACE → VERIFY → REDUCE**
+## Problem
 
----
+Organizations often struggle to accurately track transportation-related Scope 3 emissions because shipment information is scattered across systems, emissions calculations are performed manually, and reported values may lack verification and auditability.
 
-##  Problem
-
-Transportation is a major source of Scope 3 emissions, but organizations often struggle with:
-
-- Scattered shipment data
-- Manual emissions calculations
-- Unverified carbon figures
-- Limited visibility across suppliers and transport modes
-- Difficulty identifying practical ways to reduce emissions
-- Poor auditability of reported emissions
-
-CarbonTrace addresses these challenges through a centralized transportation emissions workflow.
-
----
+CarbonTrace addresses these challenges by providing a centralized workflow for collecting, calculating, verifying, auditing, and reducing transportation emissions.
 
 ## Solution
 
-CarbonTrace allows organizations to:
+CarbonTrace follows a simple workflow:
 
-1. Record transportation shipments
-2. Calculate emissions automatically
-3. Track suppliers and transportation modes
-4. Verify shipment records through a human-in-the-loop workflow
-5. Maintain an audit trail of verification actions
-6. Identify lower-carbon transportation alternatives
-7. Estimate potential CO₂e reductions
-8. Export emissions data for reporting and audit purposes
+**TRACE → VERIFY → REDUCE**
 
----
-
-# TRACE
+### TRACE
 
 CarbonTrace captures shipment-level transportation data including:
 
@@ -52,13 +30,12 @@ CarbonTrace captures shipment-level transportation data including:
 - Transportation mode
 - Emission factor
 
+Users can enter shipment information manually, upload CSV files, or provide shipment information through text parsing.
+
 Emissions are calculated using:
 
 ```text
-Emissions (kg CO₂e)
-=
-Weight (tonnes)
-×
-Distance (km)
-×
-Emission Factor (kg CO₂e / tonne-km)
+Emissions (kg CO2e)
+= Weight (tonnes)
+× Distance (km)
+× Emission Factor (kg CO2e / tonne-km)
