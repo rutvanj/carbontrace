@@ -1,4 +1,4 @@
-# CarbonTrace AI 🌱
+# CarbonTrace AI 
 
 ### Trace. Verify. Reduce.
 
@@ -10,7 +10,7 @@ Instead of treating carbon reporting as a static calculation, CarbonTrace create
 
 ---
 
-## 🚨 Problem
+##  Problem
 
 Transportation is a major source of Scope 3 emissions, but organizations often struggle with:
 
@@ -25,7 +25,7 @@ CarbonTrace addresses these challenges through a centralized transportation emis
 
 ---
 
-## 💡 Solution
+## Solution
 
 CarbonTrace allows organizations to:
 
@@ -40,7 +40,7 @@ CarbonTrace allows organizations to:
 
 ---
 
-# 🔍 TRACE
+# TRACE
 
 CarbonTrace captures shipment-level transportation data including:
 
