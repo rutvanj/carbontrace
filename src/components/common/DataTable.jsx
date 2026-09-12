@@ -14,12 +14,12 @@ export function DataTable({
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm border-collapse">
           <thead>
-            <tr className="border-b border-[#D8CBB4] bg-[#E8DEC9]/90 text-[11px] font-bold text-[#17352B] uppercase tracking-wider">
+            <tr className="border-b border-[#D8CBB4] bg-[#E8DEC9]/90 text-xs font-bold text-[#17352B] uppercase tracking-wider">
               {columns.map((col, idx) => (
                 <th
                   key={col.key || idx}
                   className={cn(
-                    'px-4 py-3 whitespace-nowrap',
+                    'px-5 py-3.5 whitespace-nowrap',
                     col.align === 'right' && 'text-right',
                     col.align === 'center' && 'text-center',
                     col.headerClassName
@@ -51,7 +51,7 @@ export function DataTable({
                     <td
                       key={col.key || colIdx}
                       className={cn(
-                        'px-4 py-3.5 text-[#17352B] whitespace-nowrap text-xs sm:text-sm',
+                        'px-5 py-4 text-[#17352B] whitespace-nowrap text-sm',
                         col.align === 'right' && 'text-right',
                         col.align === 'center' && 'text-center',
                         col.className

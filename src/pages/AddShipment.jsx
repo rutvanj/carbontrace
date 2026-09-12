@@ -81,13 +81,6 @@ export function AddShipment() {
               supplierTier: match.tier
             }));
           }
-        } else if (data.length > 0) {
-          setFormData((prev) => ({
-            ...prev,
-            supplierId: data[0].id,
-            supplierName: data[0].name,
-            supplierTier: data[0].tier
-          }));
         }
       } catch (err) {
         console.error('Failed to load suppliers:', err);
@@ -107,6 +100,37 @@ export function AddShipment() {
       supplierName: match ? match.name : '',
       supplierTier: match ? match.tier : 'Tier 1'
     }));
+    if (selectedId) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.supplierId;
+        return next;
+      });
+    }
+  };
+
+  const handleWeightChange = (e) => {
+    const val = e.target.value;
+    setFormData((prev) => ({ ...prev, weight: val }));
+    if (val !== '' && !isNaN(parseFloat(val)) && parseFloat(val) > 0) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.weight;
+        return next;
+      });
+    }
+  };
+
+  const handleDistanceChange = (e) => {
+    const val = e.target.value;
+    setFormData((prev) => ({ ...prev, distance: val }));
+    if (val !== '' && !isNaN(parseFloat(val)) && parseFloat(val) > 0) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.distance;
+        return next;
+      });
+    }
   };
 
   // Live preview estimation (Clearly annotated as non-authoritative client preview)
@@ -134,14 +158,22 @@ export function AddShipment() {
     if (!formData.destination.trim()) errs.destination = 'Destination location is required';
     if (!formData.material.trim()) errs.material = 'Material / cargo payload is required';
 
-    const weightNum = parseFloat(formData.weight);
-    if (!formData.weight || isNaN(weightNum) || weightNum <= 0) {
-      errs.weight = 'Weight must be a positive numeric value';
+    if (formData.weight === '' || formData.weight === null || formData.weight === undefined || String(formData.weight).trim() === '') {
+      errs.weight = 'Cargo weight is required.';
+    } else {
+      const weightNum = parseFloat(formData.weight);
+      if (isNaN(weightNum) || weightNum <= 0) {
+        errs.weight = 'Cargo weight must be greater than 0.';
+      }
     }
 
-    const distNum = parseFloat(formData.distance);
-    if (!formData.distance || isNaN(distNum) || distNum <= 0) {
-      errs.distance = 'Distance must be a positive numeric value (km)';
+    if (formData.distance === '' || formData.distance === null || formData.distance === undefined || String(formData.distance).trim() === '') {
+      errs.distance = 'Distance is required.';
+    } else {
+      const distNum = parseFloat(formData.distance);
+      if (isNaN(distNum) || distNum <= 0) {
+        errs.distance = 'Distance must be greater than 0.';
+      }
     }
 
     if (!formData.date) {
@@ -259,9 +291,9 @@ export function AddShipment() {
         <button
           type="button"
           onClick={() => navigate('/shipments')}
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#687266] hover:text-[#0F3D2E] mb-3 transition-colors"
+          className="inline-flex items-center gap-1.5 text-sm font-bold text-[#687266] hover:text-[#0F3D2E] mb-3 transition-colors"
         >
-          <ArrowLeft className="w-3.5 h-3.5" />
+          <ArrowLeft className="w-4 h-4" />
           <span>Back to Shipments Log</span>
         </button>
 
@@ -277,11 +309,11 @@ export function AddShipment() {
       </div>
 
       {/* Mode Tabs */}
-      <div className="flex items-center gap-2 border-b border-[#D8CBB4] pb-2">
+      <div className="flex items-center gap-2.5 border-b border-[#D8CBB4] pb-2.5">
         <button
           type="button"
           onClick={() => setActiveTab('form')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+          className={`px-4.5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
             activeTab === 'form'
               ? 'bg-[#0F3D2E] text-white shadow-subtle'
               : 'bg-[#F8F3E8] text-[#17352B] border border-[#D8CBB4] hover:bg-[#E8DEC9]'
@@ -294,7 +326,7 @@ export function AddShipment() {
         <button
           type="button"
           onClick={() => setActiveTab('ai-text')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+          className={`px-4.5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
             activeTab === 'ai-text'
               ? 'bg-[#0F3D2E] text-white shadow-subtle'
               : 'bg-[#F8F3E8] text-[#17352B] border border-[#D8CBB4] hover:bg-[#E8DEC9]'
@@ -307,7 +339,7 @@ export function AddShipment() {
         <button
           type="button"
           onClick={() => setActiveTab('csv')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+          className={`px-4.5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all ${
             activeTab === 'csv'
               ? 'bg-[#0F3D2E] text-white shadow-subtle'
               : 'bg-[#F8F3E8] text-[#17352B] border border-[#D8CBB4] hover:bg-[#E8DEC9]'
@@ -387,9 +419,9 @@ export function AddShipment() {
                 onClick={() => {
                   setSubmittedShipment(null);
                   setFormData({
-                    supplierId: suppliers[0]?.id || '',
-                    supplierName: suppliers[0]?.name || '',
-                    supplierTier: suppliers[0]?.tier || 'Tier 1',
+                    supplierId: '',
+                    supplierName: '',
+                    supplierTier: 'Tier 1',
                     origin: '',
                     destination: '',
                     material: '',
@@ -400,6 +432,7 @@ export function AddShipment() {
                     date: new Date().toISOString().split('T')[0],
                     notes: ''
                   });
+                  setErrors({});
                 }}
                 className="text-xs text-[#0F3D2E] hover:underline font-bold px-3 py-2"
               >
@@ -412,15 +445,15 @@ export function AddShipment() {
             <div className="card-base p-6 space-y-5 border border-[#D8CBB4]">
               <div className="border-b border-[#D8CBB4]/60 pb-3 flex items-center justify-between">
                 <div>
-                  <h2 className="text-sm font-bold text-[#17352B]">Shipment Specification</h2>
-                  <p className="text-xs text-[#687266]">Complete freight telemetry parameters for activity-based emissions calculation</p>
+                  <h2 className="text-base font-bold text-[#17352B]">Shipment Specification</h2>
+                  <p className="text-sm text-[#687266]">Complete freight telemetry parameters for activity-based emissions calculation</p>
                 </div>
-                <span className="text-[11px] font-semibold text-[#8C998B]">* Required fields</span>
+                <span className="text-xs font-semibold text-[#8C998B]">* Required fields</span>
               </div>
 
               {/* General form error */}
               {errors.form && (
-                <div className="p-3 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-xs flex items-center gap-2 font-medium">
+                <div className="p-3 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-sm flex items-center gap-2 font-medium">
                   <AlertCircle className="w-4 h-4 shrink-0 text-[#DC2626]" />
                   <span>{errors.form}</span>
                 </div>
@@ -429,15 +462,19 @@ export function AddShipment() {
               {/* Section 1: Supplier & Material */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     1. Supplier Entity *
                   </label>
                   <select
-                    value={formData.supplierId}
+                    id="supplier-entity-select"
+                    value={formData.supplierId || ''}
                     onChange={handleSupplierChange}
-                    className="input-base text-xs"
+                    className="input-base text-sm"
                     disabled={loadingSuppliers}
                   >
+                    <option value="">
+                      {loadingSuppliers ? 'Loading suppliers...' : 'Select Supplier Entity'}
+                    </option>
                     {suppliers.map((s) => (
                       <option key={s.id} value={s.id}>
                         {s.name} ({s.tier})
@@ -445,12 +482,12 @@ export function AddShipment() {
                     ))}
                   </select>
                   {errors.supplierId && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.supplierId}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.supplierId}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     2. Material / Cargo Description *
                   </label>
                   <input
@@ -458,10 +495,10 @@ export function AddShipment() {
                     placeholder="e.g. Cold-Rolled Aluminum Sheet 6061-T6"
                     value={formData.material}
                     onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                    className="input-base text-xs"
+                    className="input-base text-sm"
                   />
                   {errors.material && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.material}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.material}</p>
                   )}
                 </div>
               </div>
@@ -469,40 +506,40 @@ export function AddShipment() {
               {/* Section 2: Origin & Destination */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     3. Origin Location *
                   </label>
                   <div className="relative">
-                    <MapPin className="w-3.5 h-3.5 text-[#8C998B] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <MapPin className="w-4 h-4 text-[#8C998B] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       placeholder="e.g. Duisburg Inland Port, Germany"
                       value={formData.origin}
                       onChange={(e) => setFormData({ ...formData, origin: e.target.value })}
-                      className="input-base pl-9 text-xs"
+                      className="input-base pl-9 text-sm"
                     />
                   </div>
                   {errors.origin && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.origin}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.origin}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     4. Destination Location *
                   </label>
                   <div className="relative">
-                    <MapPin className="w-3.5 h-3.5 text-[#8C998B] absolute left-3 top-1/2 -translate-y-1/2" />
+                    <MapPin className="w-4 h-4 text-[#8C998B] absolute left-3 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       placeholder="e.g. Stuttgart Assembly Plant 4, Germany"
                       value={formData.destination}
                       onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                      className="input-base pl-9 text-xs"
+                      className="input-base pl-9 text-sm"
                     />
                   </div>
                   {errors.destination && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.destination}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.destination}</p>
                   )}
                 </div>
               </div>
@@ -510,13 +547,13 @@ export function AddShipment() {
               {/* Section 3: Mode, Weight & Distance */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     5. Transport Mode *
                   </label>
                   <select
                     value={formData.transportMode}
                     onChange={(e) => setFormData({ ...formData, transportMode: e.target.value })}
-                    className="input-base text-xs"
+                    className="input-base text-sm"
                   >
                     <option value="Road">Road (Heavy Commercial Truck)</option>
                     <option value="Rail">Rail (Freight Intermodal)</option>
@@ -525,51 +562,53 @@ export function AddShipment() {
                     <option value="Inland">Inland Waterway / Barge</option>
                   </select>
                   {errors.transportMode && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.transportMode}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.transportMode}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     6. Cargo Weight *
                   </label>
-                  <div className="flex gap-1.5">
+                  <div className="flex gap-2">
                     <input
                       type="number"
-                      step="any"
+                      step="0.01"
+                      min="0"
                       placeholder="e.g. 24000"
                       value={formData.weight}
-                      onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
-                      className="input-base text-xs flex-1"
+                      onChange={handleWeightChange}
+                      className="input-base text-sm flex-1"
                     />
                     <select
                       value={formData.weightUnit}
                       onChange={(e) => setFormData({ ...formData, weightUnit: e.target.value })}
-                      className="input-base text-xs w-20 bg-[#E8DEC9] font-bold text-[#17352B]"
+                      className="input-base text-sm w-24 bg-[#E8DEC9] font-bold text-[#17352B]"
                     >
                       <option value="kg">kg</option>
                       <option value="t">tonnes</option>
                     </select>
                   </div>
                   {errors.weight && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.weight}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.weight}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     7. Distance (km) *
                   </label>
                   <input
                     type="number"
-                    step="any"
+                    step="0.01"
+                    min="0"
                     placeholder="e.g. 420"
                     value={formData.distance}
-                    onChange={(e) => setFormData({ ...formData, distance: e.target.value })}
-                    className="input-base text-xs"
+                    onChange={handleDistanceChange}
+                    className="input-base text-sm"
                   />
                   {errors.distance && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.distance}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.distance}</p>
                   )}
                 </div>
               </div>
@@ -577,22 +616,22 @@ export function AddShipment() {
               {/* Section 4: Date & Notes */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     8. Shipment Execution Date *
                   </label>
                   <input
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="input-base text-xs"
+                    className="input-base text-sm"
                   />
                   {errors.date && (
-                    <p className="mt-1 text-[11px] text-[#991B1B] font-semibold">{errors.date}</p>
+                    <p className="mt-1 text-xs text-[#991B1B] font-semibold">{errors.date}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#17352B] mb-1">
+                  <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                     9. Audit Notes / Bill of Lading Reference
                   </label>
                   <input
@@ -600,38 +639,38 @@ export function AddShipment() {
                     placeholder="e.g. BOL-88492, verified Euro VI vehicle"
                     value={formData.notes}
                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="input-base text-xs"
+                    className="input-base text-sm"
                   />
                 </div>
               </div>
             </div>
 
             {/* Client Live Preview Box */}
-            <div className="p-4 rounded-xl bg-[#F8F3E8] border border-[#D8CBB4] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
+            <div className="p-4.5 rounded-xl bg-[#F8F3E8] border border-[#D8CBB4] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-subtle">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#17352B]">Estimated Carbon Preview:</span>
-                  <span className="text-base font-extrabold text-[#0F3D2E]">
+                  <span className="text-sm font-bold text-[#17352B]">Estimated Carbon Preview:</span>
+                  <span className="text-xl font-extrabold text-[#0F3D2E]">
                     {formatEmissions(previewEmissions)}
                   </span>
                 </div>
-                <p className="text-[11px] text-[#687266] max-w-xl">
+                <p className="text-xs text-[#687266] max-w-xl">
                   GLEC v3.0 / DEFRA activity factor model. Official verification is locked upon compliance verifier sign-off.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2.5 shrink-0">
+              <div className="flex items-center gap-3 shrink-0">
                 <button
                   type="button"
                   onClick={() => navigate('/shipments')}
-                  className="btn-secondary text-xs"
+                  className="btn-secondary text-sm py-2 px-4"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn-primary text-xs"
+                  className="btn-primary text-sm py-2 px-4"
                 >
                   {submitting ? 'Transmitting to Engine...' : 'Submit for Verification'}
                 </button>
@@ -646,24 +685,24 @@ export function AddShipment() {
         <div className="card-base p-6 space-y-4 border border-[#D8CBB4]">
           <div className="flex items-start justify-between border-b border-[#D8CBB4]/60 pb-3">
             <div>
-              <h2 className="text-sm font-bold text-[#17352B] flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#D97706]" />
+              <h2 className="text-base font-bold text-[#17352B] flex items-center gap-2">
+                <Sparkles className="w-4.5 h-4.5 text-[#D97706]" />
                 <span>AI Freight Text Ingestion</span>
               </h2>
-              <p className="text-xs text-[#687266] mt-0.5">
+              <p className="text-sm text-[#687266] mt-0.5">
                 Paste an email dispatch, bill of lading snippet, or carrier memo. The NLP parser extracts origin, destination, weight, distance, and mode.
               </p>
             </div>
           </div>
 
           {errors.text && (
-            <div className="p-3 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-xs font-medium">
+            <div className="p-3.5 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-sm font-medium">
               {errors.text}
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="block text-xs font-bold text-[#17352B]">
+            <label className="block text-sm font-bold text-[#17352B]">
               Carrier Dispatch / Shipment Free Text
             </label>
             <textarea
@@ -671,12 +710,12 @@ export function AddShipment() {
               placeholder="e.g. Dispatched 48 tonnes of structural steel beams from Antwerp Port to Munich Logistics Center via Rail Freight across 780 km."
               value={rawText}
               onChange={(e) => setRawText(e.target.value)}
-              className="input-base text-xs leading-relaxed"
+              className="input-base text-sm leading-relaxed"
             />
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-            <div className="text-[11px] text-[#687266]">
+            <div className="text-xs text-[#687266]">
               Quick sample:{' '}
               <button
                 type="button"
@@ -691,7 +730,7 @@ export function AddShipment() {
               type="button"
               disabled={parsingText || !rawText.trim()}
               onClick={handleParseText}
-              className="btn-primary text-xs"
+              className="btn-primary text-sm py-2 px-4"
             >
               {parsingText ? (
                 <>
@@ -714,42 +753,42 @@ export function AddShipment() {
         <div className="card-base p-6 space-y-5 border border-[#D8CBB4]">
           <div className="flex items-start justify-between border-b border-[#D8CBB4]/60 pb-3">
             <div>
-              <h2 className="text-sm font-bold text-[#17352B] flex items-center gap-2">
-                <FileSpreadsheet className="w-4 h-4 text-[#0F3D2E]" />
+              <h2 className="text-base font-bold text-[#17352B] flex items-center gap-2">
+                <FileSpreadsheet className="w-4.5 h-4.5 text-[#0F3D2E]" />
                 <span>Bulk CSV Shipment Ingestion</span>
               </h2>
-              <p className="text-xs text-[#687266] mt-0.5">
+              <p className="text-sm text-[#687266] mt-0.5">
                 Upload batches of carrier shipments. Fast-track Scope 3 baseline data collection across logistics providers.
               </p>
             </div>
             <button
               type="button"
               onClick={handleDownloadSampleCsv}
-              className="btn-secondary text-xs"
+              className="btn-secondary text-sm py-2 px-3.5"
               title="Download CSV format template"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-4 h-4" />
               <span>Download Template</span>
             </button>
           </div>
 
           {errors.csv && (
-            <div className="p-3 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-xs font-medium">
+            <div className="p-3.5 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-sm font-medium">
               {errors.csv}
             </div>
           )}
 
           {csvResult && (
             <div className="p-4 rounded-xl bg-[#E2EBE5] border border-[#1F5D46]/40 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#0F3D2E]">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-sm font-bold text-[#0F3D2E]">
+                <CheckCircle2 className="w-4.5 h-4.5" />
                 <span>Bulk Ingestion Complete</span>
               </div>
-              <p className="text-xs text-[#17352B]">
+              <p className="text-sm text-[#17352B]">
                 Successfully processed <strong>{csvResult.inserted_ids?.length || 0}</strong> shipments into the ledger.
               </p>
               <div className="pt-1">
-                <NavLink to="/shipments" className="btn-primary text-xs py-1.5 px-3">
+                <NavLink to="/shipments" className="btn-primary text-sm py-2 px-4">
                   View Uploaded Shipments
                 </NavLink>
               </div>
@@ -758,15 +797,15 @@ export function AddShipment() {
 
           <form onSubmit={handleUploadCsv} className="space-y-4">
             <div className="border-2 border-dashed border-[#D8CBB4] rounded-2xl p-8 text-center bg-[#FDFBF7] hover:bg-[#F8F3E8] transition-colors">
-              <Upload className="w-8 h-8 text-[#0F3D2E] mx-auto mb-2" />
-              <div className="text-xs font-bold text-[#17352B]">
+              <Upload className="w-9 h-9 text-[#0F3D2E] mx-auto mb-2" />
+              <div className="text-sm font-bold text-[#17352B]">
                 {csvFile ? csvFile.name : 'Select or drag & drop a .csv freight file'}
               </div>
-              <p className="text-[11px] text-[#687266] mt-1">
+              <p className="text-xs text-[#687266] mt-1">
                 Columns: origin, destination, weight_tonnes, distance_km, transport_mode, supplier_id
               </p>
               <label className="mt-4 inline-block">
-                <span className="btn-secondary text-xs cursor-pointer">
+                <span className="btn-secondary text-sm py-2 px-4 cursor-pointer">
                   Browse Files
                 </span>
                 <input
@@ -782,7 +821,7 @@ export function AddShipment() {
               <button
                 type="submit"
                 disabled={uploadingCsv || !csvFile}
-                className="btn-primary text-xs"
+                className="btn-primary text-sm py-2 px-4"
               >
                 {uploadingCsv ? 'Processing Ingestion...' : 'Upload & Compute Emissions'}
               </button>

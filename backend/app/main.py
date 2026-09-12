@@ -30,6 +30,7 @@ if _frontend_url and _frontend_url not in _origins:
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"^https?://(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+)(:\d+)?$",
     allow_origins=_origins,
     allow_credentials=True,
     allow_methods=["*"],

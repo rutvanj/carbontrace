@@ -11,12 +11,12 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 copy .env.example .env
 python -m app.seed
-uvicorn app.main:app --reload --port 4000
+uvicorn app.main:app --reload --port 8000
 ```
 
-API URL: http://localhost:4000
-Swagger UI: http://localhost:4000/docs
-Health: GET http://localhost:4000/health
+API URL: http://localhost:8000
+Swagger UI: http://localhost:8000/docs
+Health: GET http://localhost:8000/health
 
 Demo credentials created by `python -m app.seed`:
 

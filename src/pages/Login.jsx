@@ -18,8 +18,7 @@ export function Login() {
       await authService.login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      const detail = err?.response?.data?.detail;
-      setError(detail || 'Invalid credentials. Please try again.');
+      setError(err.message || 'Invalid email or password.');
     } finally {
       setLoading(false);
     }
@@ -33,68 +32,68 @@ export function Login() {
 
   return (
     <div className="min-h-screen bg-[#F3EBDD] paper-texture flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+      <div className="sm:mx-auto sm:w-full sm:max-w-lg text-center">
         {/* Logo Badge */}
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#0F3D2E] text-[#F8F3E8] shadow-subtle ring-8 ring-[#E8DEC9] mb-4">
-          <Leaf className="w-8 h-8 text-[#E8DEC9]" />
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#0F3D2E] text-[#F8F3E8] shadow-natural ring-8 ring-[#E8DEC9] mb-4">
+          <Leaf className="w-9 h-9 text-[#E8DEC9]" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#17352B]">
+        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#17352B]">
           CarbonTrace AI
         </h1>
-        <p className="mt-1.5 text-xs sm:text-sm font-bold text-[#0F3D2E] tracking-widest uppercase">
+        <p className="mt-2 text-sm sm:text-base font-bold text-[#0F3D2E] tracking-widest uppercase">
           TRACE. VERIFY. REDUCE.
         </p>
-        <p className="mt-2 text-xs text-[#687266] max-w-sm mx-auto">
+        <p className="mt-2 text-sm text-[#687266] max-w-md mx-auto leading-relaxed">
           Scope 3 Category 4 transportation emissions tracking, verification, and reduction platform.
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="card-base p-8 shadow-subtle border border-[#D8CBB4] bg-[#F8F3E8]">
-          <form className="space-y-4" onSubmit={handleLogin}>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-lg px-4 sm:px-0">
+        <div className="card-base p-8 sm:p-9 shadow-natural border border-[#D8CBB4] bg-[#F8F3E8]">
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div>
-              <label className="block text-xs font-semibold text-[#17352B] mb-1">
+              <label className="block text-sm font-bold text-[#17352B] mb-1.5">
                 Corporate ESG Email
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-[#6F8068] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4.5 h-4.5 text-[#6F8068] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-base pl-9 text-xs"
+                  className="input-base pl-10 text-sm py-2.5"
                   placeholder="name@company.com"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="block text-xs font-semibold text-[#17352B]">
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-sm font-bold text-[#17352B]">
                   Password
                 </label>
-                <span className="text-[11px] text-[#0F3D2E] font-medium hover:underline cursor-pointer">
+                <span className="text-xs text-[#0F3D2E] font-semibold hover:underline cursor-pointer">
                   SSO Portal
                 </span>
               </div>
               <div className="relative">
-                <Lock className="w-4 h-4 text-[#6F8068] absolute left-3 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4.5 h-4.5 text-[#6F8068] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input-base pl-9 text-xs"
+                  className="input-base pl-10 text-sm py-2.5"
                   placeholder="Enter your security token"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 p-3 rounded-lg bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-xs">
-                <AlertCircle className="w-4 h-4 shrink-0" />
+              <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-[#FEE2E2] border border-[#FECACA] text-[#991B1B] text-sm font-semibold">
+                <AlertCircle className="w-4.5 h-4.5 shrink-0 text-[#DC2626]" />
                 <span>{error}</span>
               </div>
             )}
@@ -103,14 +102,14 @@ export function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full btn-primary py-2.5 text-sm flex items-center justify-center gap-2"
+                className="w-full btn-primary py-3 text-base flex items-center justify-center gap-2 shadow-subtle font-bold"
               >
                 {loading ? (
                   <span>Authenticating...</span>
                 ) : (
                   <>
                     <span>Enter CarbonTrace Portal</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4.5 h-4.5" />
                   </>
                 )}
               </button>
@@ -118,34 +117,34 @@ export function Login() {
           </form>
 
           {/* ESG Compliance Demo Credentials with 1-click fill */}
-          <div className="mt-6 pt-5 border-t border-[#D8CBB4]">
-            <div className="p-3.5 rounded-lg bg-[#E8DEC9]/50 border border-[#D8CBB4] text-xs">
+          <div className="mt-7 pt-6 border-t border-[#D8CBB4]">
+            <div className="p-4 rounded-xl bg-[#E8DEC9]/50 border border-[#D8CBB4] text-sm">
               <div className="flex items-center gap-2 text-[#0F3D2E] font-bold mb-2">
-                <ShieldCheck className="w-4 h-4 text-[#0F3D2E]" />
+                <ShieldCheck className="w-4.5 h-4.5 text-[#0F3D2E]" />
                 <span>One-Click Demo Roles</span>
               </div>
-              <p className="text-[11px] text-[#687266] mb-2.5">
+              <p className="text-xs text-[#687266] mb-3">
                 Click any credential card to auto-fill credentials:
               </p>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => handleAutofill('entry@example.com', 'entrypass')}
-                  className="px-2 py-1.5 rounded bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-[11px] font-semibold text-[#17352B] transition-all text-center"
+                  className="px-3 py-2 rounded-lg bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-xs font-bold text-[#17352B] transition-all text-center shadow-sm hover:shadow"
                 >
                   Data Entry
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAutofill('verifier@example.com', 'verifierpass')}
-                  className="px-2 py-1.5 rounded bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-[11px] font-semibold text-[#17352B] transition-all text-center"
+                  className="px-3 py-2 rounded-lg bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-xs font-bold text-[#17352B] transition-all text-center shadow-sm hover:shadow"
                 >
                   Verifier
                 </button>
                 <button
                   type="button"
                   onClick={() => handleAutofill('admin@example.com', 'adminpass')}
-                  className="px-2 py-1.5 rounded bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-[11px] font-semibold text-[#17352B] transition-all text-center"
+                  className="px-3 py-2 rounded-lg bg-[#F8F3E8] border border-[#D8CBB4] hover:border-[#0F3D2E] text-xs font-bold text-[#17352B] transition-all text-center shadow-sm hover:shadow"
                 >
                   Admin
                 </button>

@@ -10,24 +10,24 @@ export function PageHeader({
   className = '',
 }) {
   return (
-    <div className={cn('mb-6 space-y-2', className)}>
+    <div className={cn('mb-6 space-y-2.5', className)}>
       {breadcrumbs && (
-        <div className="text-xs text-[#687266] mb-1 flex items-center gap-1.5 font-medium">
+        <div className="text-sm text-[#687266] mb-1.5 flex items-center gap-1.5 font-medium">
           {breadcrumbs}
         </div>
       )}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-[#17352B]">{title}</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#17352B]">{title}</h1>
             {badge && <div>{badge}</div>}
           </div>
           {description && (
-            <p className="mt-1 text-xs sm:text-sm text-[#687266] max-w-3xl leading-relaxed">{description}</p>
+            <p className="mt-1.5 text-sm sm:text-base text-[#687266] max-w-3xl leading-relaxed">{description}</p>
           )}
         </div>
         {actions && (
-          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+          <div className="flex items-center gap-3 shrink-0 flex-wrap">
             {actions}
           </div>
         )}

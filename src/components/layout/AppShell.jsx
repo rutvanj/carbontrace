@@ -146,8 +146,8 @@ export function AppShell() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="p-3 space-y-1 mt-2">
-            <div className="px-3 pb-1.5 text-[10px] font-bold text-[#94B8A2] uppercase tracking-wider">
+          <nav className="p-3 space-y-1.5 mt-2">
+            <div className="px-3.5 pb-1.5 text-xs font-bold text-[#94B8A2] uppercase tracking-wider">
               Navigation
             </div>
             {navItems.map((item) => {
@@ -158,19 +158,19 @@ export function AppShell() {
                   to={item.path}
                   className={({ isActive }) =>
                     cn(
-                      'group flex items-center justify-between px-3 py-2 text-xs font-medium rounded-lg transition-all',
+                      'group flex items-center justify-between px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all',
                       isActive
-                        ? 'bg-[#1F5D46] text-white font-bold border-l-4 border-[#E8DEC9] pl-2 shadow-subtle'
+                        ? 'bg-[#1F5D46] text-white font-bold border-l-4 border-[#E8DEC9] pl-2.5 shadow-subtle'
                         : 'text-[#C5D7CC] hover:text-white hover:bg-[#173F32]'
                     )
                   }
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="w-4 h-4 text-[#94B8A2] group-hover:text-white transition-colors" />
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-4.5 h-4.5 text-[#94B8A2] group-hover:text-white transition-colors" />
                     <span>{item.name}</span>
                   </div>
                   {item.badge && (
-                    <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
+                    <span className="inline-flex items-center px-2 py-0.5 text-xs font-bold rounded-full bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]">
                       {item.badge}
                     </span>
                   )}
@@ -183,14 +183,14 @@ export function AppShell() {
         {/* User Profile & Footer Actions */}
         <div className="p-3 border-t border-[#173F32] bg-[#0B2C21]/60 space-y-2">
           {/* User Profile Info */}
-          <div className="p-2.5 rounded-xl bg-[#173F32] border border-[#1F5D46] flex items-center justify-between shadow-subtle">
+          <div className="p-3 rounded-xl bg-[#173F32] border border-[#1F5D46] flex items-center justify-between shadow-subtle">
             <div className="flex items-center gap-2.5 overflow-hidden">
-              <div className="w-8 h-8 rounded-lg bg-[#0F3D2E] text-[#E2EBE5] border border-[#1F5D46] flex items-center justify-center font-bold text-xs shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-[#0F3D2E] text-[#E2EBE5] border border-[#1F5D46] flex items-center justify-center font-bold text-xs shrink-0">
                 {user?.avatar || 'CT'}
               </div>
               <div className="truncate">
-                <div className="text-xs font-semibold text-white truncate">{user?.name || 'Compliance Lead'}</div>
-                <div className="text-[10px] text-[#94B8A2] font-semibold truncate">{user?.role || 'ESG Officer'}</div>
+                <div className="text-sm font-semibold text-white truncate">{user?.name || 'Compliance Lead'}</div>
+                <div className="text-xs text-[#94B8A2] font-semibold truncate">{user?.role || 'ESG Officer'}</div>
               </div>
             </div>
           </div>
@@ -200,15 +200,15 @@ export function AppShell() {
             <button
               type="button"
               onClick={() => alert('CarbonTrace Settings: ESG baseline factors, DEFRA/GLEC configurations, and API keys are managed here.')}
-              className="flex-1 flex items-center justify-center gap-1.5 px-2.5 py-1.5 text-xs text-[#C5D7CC] hover:text-white hover:bg-[#173F32] border border-transparent rounded-lg transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-xs text-[#C5D7CC] hover:text-white hover:bg-[#173F32] border border-transparent rounded-lg transition-colors"
             >
-              <Settings className="w-3.5 h-3.5" />
+              <Settings className="w-4 h-4" />
               <span>Settings</span>
             </button>
             <button
               type="button"
               onClick={handleLogout}
-              className="flex items-center justify-center p-1.5 text-xs text-[#C5D7CC] hover:text-[#FECACA] hover:bg-[#991B1B]/40 rounded-lg transition-colors"
+              className="flex items-center justify-center p-2 text-xs text-[#C5D7CC] hover:text-[#FECACA] hover:bg-[#991B1B]/40 rounded-lg transition-colors"
               title="Logout from CarbonTrace"
             >
               <LogOut className="w-4 h-4" />
@@ -224,11 +224,11 @@ export function AppShell() {
           {/* Search / Global Context */}
           <div className="flex items-center gap-4">
             <div className="relative w-80">
-              <Search className="w-4 h-4 text-[#8C998B] absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#8C998B] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 placeholder="Search suppliers, routes, audit IDs..."
-                className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-[#D8CBB4] rounded-lg text-[#17352B] placeholder-[#8C998B] focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-colors"
+                className="w-full pl-10 pr-3.5 py-2 text-sm bg-white border border-[#D8CBB4] rounded-lg text-[#17352B] placeholder-[#8C998B] focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/20 focus:border-[#0F3D2E] transition-colors"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && e.target.value) {
                     navigate(`/shipments?q=${encodeURIComponent(e.target.value)}`);
@@ -237,11 +237,11 @@ export function AppShell() {
               />
             </div>
 
-            <div className="h-4 w-px bg-[#D8CBB4]"></div>
+            <div className="h-5 w-px bg-[#D8CBB4]"></div>
 
-            <div className="flex items-center gap-2 text-xs text-[#687266]">
+            <div className="flex items-center gap-2 text-sm text-[#687266]">
               <span className="font-semibold text-[#687266]">Active Tenant:</span>
-              <span className="font-bold text-[#0F3D2E] bg-[#E8DEC9] px-2.5 py-0.5 rounded-full border border-[#D8CBB4]">
+              <span className="font-bold text-[#0F3D2E] bg-[#E8DEC9] px-3 py-0.5 rounded-full border border-[#D8CBB4]">
                 Global Logistics Corp
               </span>
             </div>
@@ -253,9 +253,9 @@ export function AppShell() {
             {pendingCount > 0 && (
               <NavLink
                 to="/verification"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] text-xs font-semibold hover:bg-[#FDE68A] transition-colors"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A] text-sm font-semibold hover:bg-[#FDE68A] transition-colors"
               >
-                <ShieldAlert className="w-3.5 h-3.5 text-[#D97706]" />
+                <ShieldAlert className="w-4 h-4 text-[#D97706]" />
                 <span>{pendingCount} Pending Verification</span>
               </NavLink>
             )}
@@ -263,9 +263,9 @@ export function AppShell() {
             {/* Quick Add Shipment */}
             <NavLink
               to="/shipments/new"
-              className="btn-primary text-xs py-1.5 px-3.5"
+              className="btn-primary text-sm py-2 px-4"
             >
-              <PlusCircle className="w-3.5 h-3.5" />
+              <PlusCircle className="w-4 h-4" />
               <span>Log Shipment</span>
             </NavLink>
           </div>

@@ -29,11 +29,28 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('carbontrace_token');
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers = config.headers || {};
+      if (typeof config.headers.set === 'function') {
+        config.headers.set('Authorization', `Bearer ${token}`);
+      } else {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Clear stale auth data automatically when receiving 401 Unauthorized
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('carbontrace_token');
+      localStorage.removeItem('carbontrace_user');
+    }
+    return Promise.reject(error);
+  }
 );
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -268,19 +285,51 @@ export const authService = {
    * Returns a user object compatible with existing UI.
    */
   async login(email, password) {
+    // Clear stale auth data prior to new login
+    localStorage.removeItem('carbontrace_token');
+    localStorage.removeItem('carbontrace_user');
+
     // Backend requires application/x-www-form-urlencoded with "username" field
     const params = new URLSearchParams();
-    params.append('username', email);
-    params.append('password', password);
+    params.append('username', (email || '').trim());
+    params.append('password', password || '');
 
-    const { data: tokenData } = await apiClient.post('/api/auth/login', params, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    });
+    let tokenData;
+    try {
+      const res = await apiClient.post('/api/auth/login', params.toString(), {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+      tokenData = res.data;
+    } catch (err) {
+      if (!err?.response) {
+        throw new Error('Unable to connect to CarbonTrace server.');
+      }
+      if (err.response.status === 401 || err.response.status === 400) {
+        throw new Error('Invalid email or password.');
+      }
+      const detail = err.response?.data?.detail;
+      throw new Error(typeof detail === 'string' ? detail : 'Invalid email or password.');
+    }
+
+    if (!tokenData?.access_token) {
+      throw new Error('Invalid email or password.');
+    }
 
     localStorage.setItem('carbontrace_token', tokenData.access_token);
 
-    // Immediately fetch user profile
-    const { data: userRaw } = await apiClient.get('/api/auth/me');
+    // Immediately fetch user profile with explicit Authorization header
+    let userRaw;
+    try {
+      const meRes = await apiClient.get('/api/auth/me', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      });
+      userRaw = meRes.data;
+    } catch (err) {
+      localStorage.removeItem('carbontrace_token');
+      localStorage.removeItem('carbontrace_user');
+      throw new Error('Login succeeded, but your user session could not be loaded.');
+    }
+
     const user = {
       id: userRaw.id,
       name: userRaw.name || userRaw.email,
@@ -318,7 +367,9 @@ export const authService = {
     try {
       const token = localStorage.getItem('carbontrace_token');
       if (!token) return null;
-      const { data: userRaw } = await apiClient.get('/api/auth/me');
+      const { data: userRaw } = await apiClient.get('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const user = {
         id: userRaw.id,
         name: userRaw.name || userRaw.email,
@@ -332,6 +383,8 @@ export const authService = {
       localStorage.setItem('carbontrace_user', JSON.stringify(user));
       return user;
     } catch {
+      localStorage.removeItem('carbontrace_token');
+      localStorage.removeItem('carbontrace_user');
       return null;
     }
   },
