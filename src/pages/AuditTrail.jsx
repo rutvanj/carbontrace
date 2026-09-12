@@ -19,7 +19,7 @@ import { DataTable } from '../components/common/DataTable';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { Modal } from '../components/common/Modal';
 import { LoadingState } from '../components/common/FeedbackStates';
-import { auditService } from '../services/api';
+import { auditService, exportService } from '../services/api';
 
 export function AuditTrail() {
   const [records, setRecords] = useState([]);
@@ -176,7 +176,7 @@ export function AuditTrail() {
         actions={
           <button
             type="button"
-            onClick={() => alert('Exporting full cryptographic provenance ledger to CSV/JSON...')}
+            onClick={() => exportService.downloadCsv()}
             className="btn-secondary text-xs"
           >
             <Download className="w-3.5 h-3.5" />
