@@ -42,6 +42,16 @@ app.add_middleware(
 def on_startup():
     # Ensure all tables exist on every startup (idempotent)
     models.Base.metadata.create_all(bind=engine)
+    # Seed demo dataset idempotently so fresh deployments (e.g. Render SQLite) have complete data
+    from .database import SessionLocal
+    from .seed import seed_demo_data
+    db = SessionLocal()
+    try:
+        seed_demo_data(db)
+    except Exception as e:
+        print(f"Startup demo seed warning: {e}")
+    finally:
+        db.close()
 
 
 @app.get("/health")
